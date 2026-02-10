@@ -8,45 +8,168 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
     <style>
-        :root { --rose-primary: #FB7185; --rose-soft: #FFF9F9; --text-main: #1A1A1A; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--rose-soft); color: var(--text-main); margin: 0; overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .font-elegant { font-family: 'Cormorant Garamond', serif; }
-        .setup-input { background: transparent; border-bottom: 2px solid #E5E5E5; padding: 12px 0; outline: none; font-family: 'Cormorant Garamond', serif; font-size: 2rem; width: 100%; text-align: center; }
-        .btn-choice { padding: 10px 16px; border: 1px solid #E5E5E5; border-radius: 50px; font-size: 10px; font-weight: 600; text-transform: uppercase; transition: 0.3s; }
-        .btn-choice.active { background: var(--rose-primary); color: white; border-color: var(--rose-primary); }
-        .price-btn { padding: 10px; border: 2px solid #EEE; border-radius: 12px; transition: 0.3s; width: 100%; text-align: center; background: white; }
-        .price-btn.active { border-color: var(--rose-primary); background: #FFF1F2; }
-        #heart-trigger { font-size: 6.5rem; cursor: pointer; filter: drop-shadow(0 0 15px rgba(251, 113, 133, 0.4)); position: relative; z-index: 50; }
-        .falling-petal { position: fixed; top: -5vh; pointer-events: none; z-index: 1; animation: fall linear forwards; opacity: 0.6; }
-        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
-        #petal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(10, 1fr); }
-        .overlay-petal { background: var(--rose-primary); border-radius: 50% 0 50% 50%; opacity: 0; }
-        .hidden { display: none !important; }
-        .lyrics-text { font-size: 2.2rem; line-height: 1.4; color: #2D2D2D; padding: 0 20px; }
-        @media (max-width: 640px) { .lyrics-text { font-size: 1.8rem; } }
+        :root {
+            --rose-primary: #FB7185;
+            --rose-soft: #FFF9F9;
+            --text-main: #1A1A1A;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--rose-soft);
+            color: var(--text-main);
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .font-elegant {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .setup-input {
+            background: transparent;
+            border-bottom: 2px solid #E5E5E5;
+            padding: 12px 0;
+            outline: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-choice {
+            padding: 10px 16px;
+            border: 1px solid #E5E5E5;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-choice.active {
+            background: var(--rose-primary);
+            color: white;
+            border-color: var(--rose-primary);
+        }
+
+        .price-btn {
+            padding: 10px;
+            border: 2px solid #EEE;
+            border-radius: 12px;
+            transition: 0.3s;
+            width: 100%;
+            text-align: center;
+            background: white;
+        }
+
+        .price-btn.active {
+            border-color: var(--rose-primary);
+            background: #FFF1F2;
+        }
+
+        #heart-trigger {
+            font-size: 6.5rem;
+            cursor: pointer;
+            filter: drop-shadow(0 0 15px rgba(251, 113, 133, 0.4));
+            position: relative;
+            z-index: 50;
+        }
+
+        .falling-petal {
+            position: fixed;
+            top: -5vh;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear forwards;
+            opacity: 0.6;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
+        #petal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+        }
+
+        .overlay-petal {
+            background: var(--rose-primary);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .lyrics-text {
+            font-size: 2.2rem;
+            line-height: 1.4;
+            color: #2D2D2D;
+            padding: 0 20px;
+        }
+
+        @media (max-width: 640px) {
+            .lyrics-text {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Add this to your <style> section */
+        .falling-petal {
+            filter: drop-shadow(0 0 5px rgba(251, 113, 133, 0.2));
+        }
+
+        /* Optional: Blur petals that are 'further away' */
+        div[style*="z-index: 5"] {
+            filter: blur(1px) opacity(0.4);
+        }
     </style>
 </head>
 
 <body>
 
     <div id="petal-overlay"></div>
-    <audio id="bg-music" loop><source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg"></audio>
+    <audio id="bg-music" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
 
-    <div id="setup-view" class="z-20 w-full max-w-sm px-8 flex flex-col gap-8 text-center bg-white py-10 rounded-[2rem] shadow-sm mx-4 overflow-y-auto max-h-[90vh]">
+    <div id="setup-view"
+        class="z-20 w-full max-w-sm px-8 flex flex-col gap-8 text-center bg-white py-10 rounded-[2rem] shadow-sm mx-4 overflow-y-auto max-h-[90vh]">
         <div class="flex flex-col items-center gap-2">
             <h1 class="text-3xl font-elegant italic font-bold text-rose-500">OdoFlow</h1>
             <p class="text-[9px] uppercase tracking-[0.4em] text-gray-400">The Love Lab</p>
         </div>
-        
+
         <input type="text" id="target-name" class="setup-input" placeholder="Their Name">
-        
+
         <div class="flex flex-col gap-3 text-left">
             <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold ml-2">Relationship</p>
             <div class="flex flex-wrap justify-center gap-2">
                 <button onclick="setRel('lover')" id="rel-lover" class="btn-choice active">Lover</button>
                 <button onclick="setRel('crush')" id="rel-crush" class="btn-choice">Crush</button>
+                <button onclick="setRel('parent')" id="rel-parent" class="btn-choice">Parent</button>
+                <button onclick="setRel('sibling')" id="rel-sibling" class="btn-choice">Sibling</button>
                 <button onclick="setRel('friend')" id="rel-friend" class="btn-choice">Friend</button>
                 <button onclick="setRel('enemy')" id="rel-enemy" class="btn-choice">Enemy</button>
             </div>
@@ -55,40 +178,60 @@
         <div class="flex flex-col gap-3 text-left">
             <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold ml-2">Tier</p>
             <div class="grid grid-cols-4 gap-2">
-                <button onclick="setPrice(0)" id="p-0" class="price-btn active"><span class="block text-xs font-bold">₵0</span><span class="text-[7px] uppercase">Free</span></button>
-                <button onclick="setPrice(2)" id="p-2" class="price-btn"><span class="block text-xs font-bold">₵2</span><span class="text-[7px] uppercase">Basic</span></button>
-                <button onclick="setPrice(5)" id="p-5" class="price-btn"><span class="block text-xs font-bold">₵5</span><span class="text-[7px] uppercase">Sweet</span></button>
-                <button onclick="setPrice(10)" id="p-10" class="price-btn"><span class="block text-xs font-bold">₵10</span><span class="text-[7px] uppercase">Heavy</span></button>
+                <button onclick="setPrice(0)" id="p-0" class="price-btn active"><span
+                        class="block text-xs font-bold">₵0</span><span class="text-[7px] uppercase">Free</span></button>
+                <button onclick="setPrice(2)" id="p-2" class="price-btn"><span
+                        class="block text-xs font-bold">₵2</span><span
+                        class="text-[7px] uppercase">Basic</span></button>
+                <button onclick="setPrice(5)" id="p-5" class="price-btn"><span
+                        class="block text-xs font-bold">₵5</span><span
+                        class="text-[7px] uppercase">Sweet</span></button>
+                <button onclick="setPrice(10)" id="p-10" class="price-btn"><span
+                        class="block text-xs font-bold">₵10</span><span
+                        class="text-[7px] uppercase">Heavy</span></button>
             </div>
         </div>
 
         <div id="email-container" class="hidden flex flex-col gap-2">
-             <input type="email" id="user-email" class="p-3 border rounded-xl text-xs outline-none focus:border-rose-400" placeholder="Your Email (for receipt)">
+            <input type="email" id="user-email" class="p-3 border rounded-xl text-xs outline-none focus:border-rose-400"
+                placeholder="Your Email (for receipt)">
         </div>
 
-        <button id="action-btn" class="py-5 bg-black text-white rounded-full text-[10px] tracking-[0.4em] uppercase font-bold shadow-xl">Generate Free Link</button>
-        <p id="copy-status" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest opacity-0">Link Copied! Send it now.</p>
+        <button id="action-btn"
+            class="py-5 bg-black text-white rounded-full text-[10px] tracking-[0.4em] uppercase font-bold shadow-xl">Generate
+            Free Link</button>
+        <p id="copy-status" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest opacity-0">Link Copied!
+            Send it now.</p>
     </div>
 
     <div id="experience-wrapper" class="hidden relative z-10 w-full px-8 text-center">
         <div id="intro-view" class="flex flex-col items-center gap-12">
             <h1 class="text-5xl font-elegant italic font-light text-gray-800" id="intro-title"></h1>
-            <button id="read-btn" class="text-[12px] tracking-[0.4em] uppercase border-b-2 border-rose-300 pb-2 text-rose-500 font-bold">Open Note</button>
+            <button id="read-btn"
+                class="text-[12px] tracking-[0.4em] uppercase border-b-2 border-rose-300 pb-2 text-rose-500 font-bold">Open
+                Note</button>
         </div>
 
         <div id="question-view" class="hidden flex flex-col items-center gap-12 opacity-0">
-            <h1 id="question-text" class="lyrics-text font-elegant italic font-medium min-h-[180px] flex items-center justify-center"></h1>
+            <h1 id="question-text"
+                class="lyrics-text font-elegant italic font-medium min-h-[180px] flex items-center justify-center"></h1>
             <div id="buttons-container" class="hidden flex gap-10 w-full justify-center items-center">
-                <button id="yes-btn" class="text-[16px] tracking-[0.2em] uppercase text-rose-500 font-black">Yes</button>
+                <button id="yes-btn"
+                    class="text-[16px] tracking-[0.2em] uppercase text-rose-500 font-black">Yes</button>
                 <button id="no-btn" class="text-[14px] tracking-[0.2em] uppercase text-gray-300">No</button>
             </div>
-            <button id="next-msg-btn" class="text-[13px] tracking-[0.3em] uppercase text-rose-400 font-bold">Continue →</button>
+            <button id="next-msg-btn" class="text-[13px] tracking-[0.3em] uppercase text-rose-400 font-bold">Continue
+                →</button>
         </div>
 
         <div id="success-view" class="hidden flex flex-col items-center gap-12 opacity-0">
             <div id="heart-trigger">❤️</div>
-            <div class="h-32 flex items-center justify-center"><p id="final-message" class="text-3xl font-elegant italic text-gray-700 px-2"></p></div>
-            <button onclick="location.href=location.pathname" class="text-[10px] tracking-[0.3em] uppercase text-rose-400 border border-rose-100 px-6 py-2 rounded-full">Create Your Own</button>
+            <div class="h-32 flex items-center justify-center">
+                <p id="final-message" class="text-3xl font-elegant italic text-gray-700 px-2"></p>
+            </div>
+            <button onclick="location.href=location.pathname"
+                class="text-[10px] tracking-[0.3em] uppercase text-rose-400 border border-rose-100 px-6 py-2 rounded-full">Create
+                Your Own</button>
         </div>
     </div>
 
@@ -102,6 +245,14 @@
                 messages: ["I’ve been shy to say this...", "Every time I see you, my heart skip beat.", "You be the only vibe I’m feeling lately.", "Could we be more than friends?", "Will you be my Valentine?"],
                 success: ["I'm glad I said it.", "You make me smile.", "Let's see where this goes.", "You're special."]
             },
+            parent: {
+                messages: ["Everything I am is because of you.", "God really blessed me with the best.", "Thank you for the sacrifices I didn't see.", "Your prayers keep me going every day.", "Can I tell you I love you today?"],
+                success: ["You are my hero.", "God bless you always.", "The real GOAT.", "I appreciate you."]
+            },
+            sibling: {
+                messages: ["You’re annoying, but you're my person.", "I'd still share my last plantain with you.", "The best partner-in-crime since day one.", "Thanks for not telling Mom all my secrets.", "You know I love you, right?"],
+                success: ["Blood is thicker than water.", "Siblings by birth, friends by choice.", "Always my favorite person to annoy.", "Got your back forever."]
+            },
             friend: {
                 messages: ["Real ones are hard to find.", "Glad we're on the same vibe.", "Thank you for being there.", "You make life much more fun.", "Will you be my Bestie forever?"],
                 success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."]
@@ -111,7 +262,6 @@
                 success: ["Victory is mine.", "Keep watching the glory.", "Psalm 23:5 always."]
             }
         };
-
         let config = { name: "", type: "lover", amount: 0 };
 
         window.onload = () => {
@@ -134,10 +284,10 @@
             config.amount = amt * 100;
             document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`p-${amt}`).classList.add('active');
-            
+
             const btn = document.getElementById('action-btn');
             const emailCont = document.getElementById('email-container');
-            
+
             if (amt === 0) {
                 btn.innerText = "Generate Free Link";
                 emailCont.classList.add('hidden');
@@ -149,25 +299,25 @@
 
         document.getElementById('action-btn').onclick = () => {
             const name = document.getElementById('target-name').value;
-            if(!name) { alert("Enter a name first!"); return; }
+            if (!name) { alert("Enter a name first!"); return; }
 
-            if(config.amount === 0) {
+            if (config.amount === 0) {
                 generateLink();
             } else {
                 const email = document.getElementById('user-email').value;
-                if(!email) { alert("Email required for Premium!"); return; }
+                if (!email) { alert("Email required for Premium!"); return; }
                 payWithPaystack(email);
             }
         };
 
         function payWithPaystack(email) {
             let handler = PaystackPop.setup({
-                key: 'pk_live_YOUR_KEY_HERE', 
+                key: 'pk_live_YOUR_KEY_HERE',
                 email: email,
                 amount: config.amount,
                 currency: 'GHS',
-                callback: function(response){ generateLink(); },
-                onClose: function(){ alert('Payment cancelled.'); }
+                callback: function (response) { generateLink(); },
+                onClose: function () { alert('Payment cancelled.'); }
             });
             handler.openIframe();
         }
@@ -187,13 +337,15 @@
         }
 
         document.getElementById('read-btn').onclick = () => {
-            document.getElementById('bg-music').play().catch(() => {});
-            anime({ targets: '#intro-view', opacity: 0, duration: 600, complete: () => {
-                document.getElementById('intro-view').classList.add('hidden');
-                document.getElementById('question-view').classList.remove('hidden');
-                showNext();
-                anime({ targets: '#question-view', opacity: 1, translateY: [20, 0], duration: 800 });
-            }});
+            document.getElementById('bg-music').play().catch(() => { });
+            anime({
+                targets: '#intro-view', opacity: 0, duration: 600, complete: () => {
+                    document.getElementById('intro-view').classList.add('hidden');
+                    document.getElementById('question-view').classList.remove('hidden');
+                    showNext();
+                    anime({ targets: '#question-view', opacity: 1, translateY: [20, 0], duration: 800 });
+                }
+            });
         };
 
         function showNext() {
@@ -210,20 +362,21 @@
             anime({ targets: '#question-text', opacity: [0, 1], duration: 400 });
         };
 
-        document.getElementById('no-btn').onclick = function() {
+        document.getElementById('no-btn').onclick = function () {
             const yes = document.getElementById('yes-btn');
             let currentScale = parseFloat(yes.style.transform.replace('scale(', '').replace(')', '')) || 1;
             yes.style.transform = `scale(${currentScale + 0.5})`;
-            if(currentScale > 3.5) this.classList.add('hidden');
+            if (currentScale > 3.5) this.classList.add('hidden');
         };
 
         document.getElementById('yes-btn').onclick = () => {
             const overlay = document.getElementById('petal-overlay');
-            for(let i=0; i<100; i++) {
+            for (let i = 0; i < 100; i++) {
                 const p = document.createElement('div'); p.className = 'overlay-petal w-full h-full';
                 overlay.appendChild(p);
             }
-            anime({ targets: '.overlay-petal', scale: [0, 1.2], opacity: [0, 1], duration: 800, delay: anime.stagger(15, {grid:[10,10], from:'center'}),
+            anime({
+                targets: '.overlay-petal', scale: [0, 1.2], opacity: [0, 1], duration: 800, delay: anime.stagger(15, { grid: [10, 10], from: 'center' }),
                 complete: () => {
                     document.getElementById('question-view').classList.add('hidden');
                     document.getElementById('success-view').classList.remove('hidden');
@@ -238,26 +391,61 @@
             const list = themes[config.type].success;
             const msgEl = document.getElementById('final-message');
             anime({ targets: '#heart-trigger', scale: [1, 1.3, 1], duration: 400 });
-            for(let i=0; i<3; i++) createPetal();
-            anime({ targets: msgEl, opacity: 0, duration: 300, complete: () => {
-                msgEl.innerText = list[flowIndex];
-                flowIndex = (flowIndex + 1) % list.length;
-                anime({ targets: msgEl, opacity: 1, duration: 600 });
-            }});
+            for (let i = 0; i < 3; i++) createPetal();
+            anime({
+                targets: msgEl, opacity: 0, duration: 300, complete: () => {
+                    msgEl.innerText = list[flowIndex];
+                    flowIndex = (flowIndex + 1) % list.length;
+                    anime({ targets: msgEl, opacity: 1, duration: 600 });
+                }
+            });
         };
 
         let msgIndex = 0, flowIndex = 0;
         function createPetal() {
-            const p = document.createElement('div');
-            p.innerHTML = Math.random() > 0.5 ? '🌸' : '🌹'; 
-            p.className = 'falling-petal';
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.fontSize = (Math.random() * 12 + 15) + 'px';
-            const d = Math.random() * 5 + 5;
-            p.style.animationDuration = d + 's';
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), d * 1000);
+            const petal = document.createElement('div');
+            const isFlower = Math.random() > 0.5;
+
+            // Randomize appearance
+            petal.innerHTML = isFlower ? '🌸' : '🌹';
+            petal.style.position = 'fixed';
+            petal.style.top = '-50px';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            petal.style.zIndex = Math.random() > 0.5 ? '5' : '30'; // Depth effect
+            petal.style.pointerEvents = 'none';
+            petal.style.userSelect = 'none';
+            petal.style.opacity = Math.random() * 0.5 + 0.3;
+
+            document.body.appendChild(petal);
+
+            // Anime.js Animation
+            anime({
+                targets: petal,
+                translateY: '110vh',
+                translateX: [
+                    { value: (Math.random() - 0.5) * 200, duration: 4000, easing: 'easeInOutSine' },
+                    { value: (Math.random() - 0.5) * 200, duration: 4000, easing: 'easeInOutSine' }
+                ],
+                rotateZ: {
+                    value: Math.random() * 360,
+                    duration: 8000,
+                    easing: 'linear'
+                },
+                rotateX: {
+                    value: Math.random() * 720,
+                    duration: 5000,
+                    easing: 'linear'
+                },
+                duration: Math.random() * 4000 + 6000, // Duration between 6-10 seconds
+                easing: 'linear',
+                complete: () => petal.remove()
+            });
         }
+
+        // Update your window.onload or simply call this:
+        setInterval(createPetal, 600);
     </script>
 </body>
+
 </html>
