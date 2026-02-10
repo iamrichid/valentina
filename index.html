@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine?</title>
+    <title>For You | My Valentine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <style>
@@ -12,454 +12,276 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FAFAFA;
+            background-color: #FFF5F5;
             color: #1A1A1A;
-            /* Prevent scrolling/bouncing on mobile */
+            overflow-x: hidden;
             overscroll-behavior: none;
         }
 
-        .font-serif {
-            font-family: 'Playfair Display', serif;
+        .font-serif { font-family: 'Playfair Display', serif; }
+
+        /* Minimalist Grid Item */
+        .grid-item {
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #FFE4E6;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            color: #FB7185;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        .fade-in {
-            animation: fadeIn 1s ease-in-out forwards;
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(251, 113, 133, 0.2);
+            border-color: #FB7185;
+        }
+
+        /* Petal Overlay Animation */
+        #petal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 100;
+            display: flex; flex-wrap: wrap;
+        }
+
+        .petal-transition {
+            width: 10vw; height: 10vh;
+            background: #FB7185;
+            transform: scale(0);
+            border-radius: 50% 0 50% 50%; /* Petal shape */
+        }
+
+        /* Success Card View */
+        #card-display {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            z-index: 150;
             opacity: 0;
+            pointer-events: none;
+            width: 90%; max-width: 400px;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Red Pulse Animation */
-        @keyframes pulse-red {
-
-            0%,
-            100% {
-                background-color: #FAFAFA;
-            }
-
-            50% {
-                background-color: #ffcccc;
-            }
-        }
-
-        .pulse-red {
-            animation: pulse-red 0.5s infinite;
-        }
-
-        /* Falling Hearts */
-        .falling-heart {
+        .falling-petal {
             position: fixed;
             top: -10%;
-            z-index: 100;
             pointer-events: none;
+            z-index: 99;
             animation: fall linear forwards;
         }
 
         @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            text-align: center;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-            cursor: pointer;
-        }
-
-        .card-inner.is-flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-front,
-        .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-front {
-            background-color: white;
-            border: 1px solid #E5E5E5;
-            color: #C4203B;
-            font-size: 2rem;
-        }
-
-        .card-back {
-            background-color: #C4203B;
-            color: white;
-            transform: rotateY(180deg);
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            line-height: 1.4;
-        }
-
-        /* Utility */
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'val-bg': '#FAFAFA',
-                        'val-text': '#1A1A1A',
-                        'val-accent': '#C4203B',
-                        'val-soft': '#E5E5E5',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 
-<body
-    class="h-screen w-screen flex flex-col items-center justify-center overflow-hidden selection:bg-val-accent selection:text-white">
+<body class="h-screen w-screen flex flex-col items-center justify-center overflow-hidden">
 
-    <!-- Background Canvas -->
-    <canvas id="bg-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-50"></canvas>
+    <iframe src="https://www.youtube.com/embed/P6yL6E_T7wM?autoplay=1&loop=1&playlist=P6yL6E_T7wM" class="hidden" allow="autoplay"></iframe>
+
+    <div id="petal-overlay"></div>
 
     <div id="main-content" class="z-10 text-center max-w-lg px-6 w-full">
-
-        <!-- Initial State -->
-        <div id="initial-view" class="flex flex-col items-center gap-6 fade-in" style="animation-delay: 0.2s;">
-            <div class="text-xs tracking-[0.3em] uppercase text-gray-400 mb-2">February 14th</div>
-            <h1 class="text-4xl md:text-5xl font-serif italic text-val-text mb-4 leading-tight">
-                For You.
-            </h1>
-            <button id="open-btn"
-                class="mt-8 px-8 py-3 border border-val-text/20 rounded-full text-sm hover:bg-val-text hover:text-white transition-all duration-500 ease-out tracking-wide">
-                View Message
+        <div id="initial-view" class="flex flex-col items-center gap-6">
+            <h1 class="text-4xl font-serif italic text-rose-500 mb-4">A letter for you...</h1>
+            <button id="open-btn" class="px-8 py-3 bg-rose-500 text-white rounded-full text-sm tracking-widest hover:bg-rose-600 transition-colors shadow-lg shadow-rose-200">
+                OPEN
             </button>
         </div>
 
-        <!-- Question State (Hidden) -->
-        <div id="question-view" class="hidden flex-col items-center gap-8 opacity-0 w-full">
-            <div class="text-6xl mb-4 text-val-accent">♥</div>
-
-            <!-- Message / Question Text -->
-            <h1 id="question-text"
-                class="text-3xl md:text-5xl font-serif text-val-text leading-tight min-h-[120px] flex items-center justify-center">
-                ...
-            </h1>
-
-            <p id="quote-text" class="text-gray-500 font-light text-lg italic mt-2 min-h-[30px]">
-                <!-- Optional quote or subtext -->
-            </p>
-
-            <div id="buttons-container" class="hidden flex-col sm:flex-row gap-4 mt-8 w-full justify-center">
-                <button id="yes-btn"
-                    class="px-10 py-4 bg-val-text text-white rounded-full text-sm font-medium tracking-wide hover:scale-105 transition-transform duration-300 shadow-lg">
-                    Yes, Always
-                </button>
-                <button id="no-btn"
-                    class="px-10 py-4 border border-gray-200 text-gray-500 rounded-full text-sm font-medium tracking-wide hover:border-gray-400 transition-colors duration-300 bg-white shadow-sm">
-                    No thanks
-                </button>
+        <div id="question-view" class="hidden flex-col items-center gap-8 opacity-0">
+            <h1 id="question-text" class="text-2xl md:text-3xl font-serif text-gray-800 leading-relaxed min-h-[140px] flex items-center justify-center px-4"></h1>
+            
+            <div id="buttons-container" class="hidden flex gap-4 w-full justify-center">
+                <button id="yes-btn" class="px-10 py-4 bg-rose-500 text-white rounded-full font-medium shadow-lg hover:scale-105 transition-transform">Yes, Always</button>
+                <button id="no-btn" class="px-10 py-4 border border-rose-200 text-rose-400 bg-white rounded-full font-medium shadow-sm">No thanks</button>
             </div>
 
-            <!-- Next Button (For intro messages) -->
-            <button id="next-msg-btn"
-                class="hidden mt-8 px-8 py-3 bg-val-accent text-white rounded-full hover:bg-rose-700 transition-colors shadow-lg">
-                Next ❤️
+            <button id="next-msg-btn" class="mt-8 px-10 py-3 bg-rose-100 text-rose-500 rounded-full font-medium hover:bg-rose-200 transition-colors">
+                Continue ❤️
             </button>
         </div>
 
-        <!-- Success State (Hidden) -->
-        <div id="success-view"
-            class="hidden flex-col items-center gap-8 opacity-0 w-full max-w-6xl mx-auto overflow-y-auto py-10">
-            <h1 class="text-3xl md:text-5xl font-serif italic text-val-text mb-4">Messages for You</h1>
-
-            <div id="cards-container"
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-6 w-full perspective-1000">
+        <div id="success-view" class="hidden flex-col items-center gap-8 opacity-0 w-full max-w-md">
+            <h1 class="text-2xl font-serif text-gray-400 italic">Select a number</h1>
+            <div class="grid grid-cols-3 gap-4 w-full px-4">
+                <div class="grid-item" onclick="showMessage(0)">1</div>
+                <div class="grid-item" onclick="showMessage(1)">2</div>
+                <div class="grid-item" onclick="showMessage(2)">3</div>
+                <div class="grid-item" onclick="showMessage(3)">4</div>
+                <div class="grid-item" onclick="showMessage(4)">5</div>
+                <div class="grid-item" onclick="showMessage(5)">6</div>
             </div>
-
-            <p class="text-gray-400 text-xs tracking-widest uppercase mt-8 pb-10">Tap a card to flip</p>
+            <p class="text-rose-300 text-xs tracking-widest uppercase">Tap to reveal my heart</p>
         </div>
+    </div>
 
+    <div id="card-display">
+        <div class="text-rose-500 text-4xl mb-4">♥</div>
+        <p id="card-text" class="text-xl font-serif italic text-gray-700 leading-relaxed"></p>
+        <button onclick="closeCard()" class="mt-8 text-rose-400 text-sm font-semibold tracking-tighter hover:text-rose-600 transition-colors">CLOSE</button>
     </div>
 
     <script>
-        // --- Configuration ---
         const loveMessages = [
-            "I love you so much.",
-            "I love you even more than yesterday.",
+            "“Obi doba, m'ani agye wo ho.” You are the only one who truly understands my soul.",
+            "If love was a song, you'd be my favorite melody, the one I'd play on repeat forever.",
+            "Chale, they say Jollof is sweet, but your love is the only thing that satisfies my heart.",
+            "You are my Black Star—the brightest light in my sky, guiding me home wherever I am.",
+            "I don’t just want to be with you; I want to build a world where only you and I exist.",
             "Will you be my Valentine?"
         ];
 
         const noTexts = [
-            "Wait, wait, what?", "What did I do?", "Is it because of my hair?",
-            "Come on, really?", "Don't do this to me!", "I promise to be good!",
-            "Is it something I said?", "I'll buy you chocolate!", "Pretty please?",
-            "Have a heart!", "Don't be cold!", "Look at me!", "I'm crying inside!",
-            "Just one yes?", "Think about the cats!", "Think about us!",
-            "You're breaking my heart!", "I'll do the dishes forever!",
-            "Please say yes!", "Last chance!"
+            "Are you sure? 💔", "Think about it again...", "Is that your final answer?",
+            "My heart is trembling...", "I beg, don't do this to me.", "Look me in the eyes..."
         ];
 
-        const flippingMessages = [
-            "You're the best thing that ever happened to me.",
-            "I'm so lucky to have you by my side.",
-            "Every moment with you feels like a dream.",
-            "You make my world so much brighter.",
-            "I love the way you make me laugh.",
-            "To many more Valentines together! ❤️"
+        const secretMessages = [
+            "You are my greatest blessing.",
+            "Every day with you is a gift.",
+            "Your smile is my favorite view.",
+            "I choose you today and every day.",
+            "You are my home.",
+            "I love you beyond words."
         ];
 
-        // --- State ---
         let messageIndex = 0;
-        let noClickCount = 0;
+        let noCount = 0;
 
-        // --- Elements ---
+        const openBtn = document.getElementById('open-btn');
         const initialView = document.getElementById('initial-view');
         const questionView = document.getElementById('question-view');
-        const successView = document.getElementById('success-view');
         const questionText = document.getElementById('question-text');
-        const quoteText = document.getElementById('quote-text');
-        const buttonsContainer = document.getElementById('buttons-container');
         const nextMsgBtn = document.getElementById('next-msg-btn');
+        const buttonsContainer = document.getElementById('buttons-container');
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
-        const openBtn = document.getElementById('open-btn');
-        const cardsContainer = document.getElementById('cards-container');
+        const successView = document.getElementById('success-view');
 
-        // --- Logic ---
-
+        // Initial Transition
         openBtn.addEventListener('click', () => {
             anime({
-                targets: initialView,
+                targets: '#initial-view',
                 opacity: 0,
                 translateY: -20,
-                duration: 500,
-                easing: 'easeInOutQuad',
+                duration: 600,
                 complete: () => {
                     initialView.classList.add('hidden');
                     questionView.classList.remove('hidden');
-                    updateMessageState();
-                    anime({
-                        targets: questionView,
-                        opacity: [0, 1],
-                        translateY: [20, 0],
-                        duration: 800,
-                        easing: 'easeOutExpo'
-                    });
+                    updateMessage();
+                    anime({ targets: '#question-view', opacity: 1, translateY: [20, 0], duration: 800 });
                 }
             });
         });
 
-        function updateMessageState() {
+        function updateMessage() {
             questionText.innerText = loveMessages[messageIndex];
-            if (messageIndex < loveMessages.length - 1) {
-                buttonsContainer.classList.add('hidden');
-                nextMsgBtn.classList.remove('hidden');
-                quoteText.innerHTML = "";
-            } else {
+            if (messageIndex === loveMessages.length - 1) {
                 nextMsgBtn.classList.add('hidden');
                 buttonsContainer.classList.remove('hidden');
-                buttonsContainer.style.display = 'flex';
-                quoteText.innerHTML = '"In all the world, there is no heart for me like yours."';
             }
         }
 
         nextMsgBtn.addEventListener('click', () => {
             messageIndex++;
-            updateMessageState();
+            updateMessage();
+            anime({ targets: '#question-text', opacity: [0, 1], scale: [0.95, 1], duration: 500 });
         });
 
         noBtn.addEventListener('click', () => {
-            noClickCount++;
-            if (noClickCount <= noTexts.length) {
-                questionText.innerText = noTexts[(noClickCount - 1) % noTexts.length];
-                quoteText.innerHTML = "";
-                anime({
-                    targets: questionText,
-                    opacity: [0, 1],
-                    translateY: [-10, 0],
-                    duration: 400,
-                    easing: 'easeOutQuad'
-                });
+            if (noCount < noTexts.length) {
+                questionText.innerText = noTexts[noCount];
+                noCount++;
             } else {
-                triggerMeltdown();
+                // Remove the "Valentine" text and button on final No
+                questionText.innerText = "I understand. I'll always be here... 🥀";
+                buttonsContainer.classList.add('hidden');
             }
         });
 
-        function triggerMeltdown() {
-            questionText.innerText = "Is that so? Thank you for your time...";
-            document.body.classList.add('pulse-red');
-            buttonsContainer.classList.add('hidden');
-            quoteText.classList.add('hidden');
-            startHeartRain();
+        yesBtn.addEventListener('click', () => {
+            triggerPetalTransition();
+        });
 
-            setTimeout(() => {
-                const finalBtn = document.createElement('button');
-                finalBtn.innerText = "I WILL BE YOUR VALENTINE";
-                finalBtn.className = "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 py-4 bg-white text-rose-600 font-bold text-xl rounded-full shadow-2xl hover:scale-110 transition-transform z-50 animate-bounce cursor-pointer";
-                finalBtn.onclick = () => {
-                    document.body.classList.remove('pulse-red');
-                    finalBtn.remove();
-                    stopHeartRain();
-                    triggerSuccess();
-                };
-                document.body.appendChild(finalBtn);
-            }, 1000);
-        }
+        function triggerPetalTransition() {
+            const overlay = document.getElementById('petal-overlay');
+            overlay.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal-transition';
+                overlay.appendChild(petal);
+            }
 
-        yesBtn.addEventListener('click', triggerSuccess);
-
-        function triggerSuccess() {
-        const mainContent = document.getElementById('main-content');
-mainContent.classList.remove('max-w-lg');
-mainContent.classList.add('max-w-none'); 
-document.body.style.overflowY = 'auto'; // Enable scrolling for the cards
             anime({
-                targets: questionView,
-                opacity: 0,
-                duration: 500,
+                targets: '.petal-transition',
+                scale: [0, 1.2],
+                rotate: '1turn',
+                delay: anime.stagger(10, {grid: [10, 10], from: 'center'}),
+                duration: 800,
                 easing: 'easeInOutQuad',
                 complete: () => {
                     questionView.classList.add('hidden');
                     successView.classList.remove('hidden');
-                    successView.classList.add('flex');
-
-                    // Generate Cards
-                    cardsContainer.innerHTML = '';
-                    flippingMessages.forEach((msg) => {
-                        const cardWrapper = document.createElement('div');
-                        cardWrapper.className = 'w-full h-[200px] card-wrapper opacity-0'; // Start invisible
-                        cardWrapper.innerHTML = `
-                            <div class="card-inner" onclick="this.classList.toggle('is-flipped')">
-                                <div class="card-front text-4xl">❤️</div>
-                                <div class="card-back px-4 text-center text-sm md:text-base">${msg}</div>
-                            </div>
-                        `;
-                        cardsContainer.appendChild(cardWrapper);
-                    });
-
-                    triggerConfetti();
-
-                    // Animate Success View and Cards
+                    successView.style.opacity = 1;
+                    
                     anime({
-                        targets: successView,
-                        opacity: [0, 1],
-                        translateY: [20, 0],
-                        duration: 1000,
-                        easing: 'easeOutExpo'
-                    });
-
-                    // Animate Wrappers (So inner transform is clean)
-                    anime({
-                        targets: '.card-wrapper',
-                        scale: [0.5, 1],
-                        opacity: [0, 1],
-                        delay: anime.stagger(100),
+                        targets: '.petal-transition',
+                        opacity: 0,
                         duration: 800,
-                        easing: 'easeOutBack'
+                        delay: 200,
+                        easing: 'linear'
                     });
+                    startPetalRain();
                 }
             });
         }
 
-        // --- Visual Effects ---
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        const particles = [];
-        let heartInterval;
-
-        class Particle {
-            constructor(x, y) {
-                this.x = x; this.y = y;
-                this.size = Math.random() * 5 + 2;
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 4 + 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.gravity = 0.1;
-                this.opacity = 1;
-                this.decay = Math.random() * 0.02 + 0.015;
-                this.color = ['#C4203B', '#1A1A1A', '#FFB6C1'][Math.floor(Math.random() * 3)];
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                this.vy += this.gravity;
-                this.opacity -= this.decay;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = Math.max(0, this.opacity);
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.size, this.size);
-                ctx.restore();
-            }
+        function showMessage(idx) {
+            document.getElementById('card-text').innerText = secretMessages[idx];
+            const card = document.getElementById('card-display');
+            card.style.pointerEvents = 'auto';
+            anime({
+                targets: '#card-display',
+                opacity: 1,
+                scale: [0.8, 1],
+                duration: 600,
+                easing: 'easeOutBack'
+            });
         }
 
-        function animateCanvas() {
-            ctx.clearRect(0, 0, width, height);
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].opacity <= 0) particles.splice(i, 1);
-            }
-            requestAnimationFrame(animateCanvas);
-        }
-        animateCanvas();
-
-        function triggerConfetti() {
-            for (let i = 0; i < 100; i++) particles.push(new Particle(width / 2, height / 2));
+        function closeCard() {
+            const card = document.getElementById('card-display');
+            card.style.pointerEvents = 'none';
+            anime({ targets: '#card-display', opacity: 0, scale: 0.8, duration: 400 });
         }
 
-        function startHeartRain() {
-            heartInterval = setInterval(() => {
-                const heart = document.createElement('div');
-                heart.innerText = '💔';
-                heart.className = 'falling-heart';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                heart.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 3000);
-            }, 150);
-        }
-
-        function stopHeartRain() {
-            clearInterval(heartInterval);
-            document.querySelectorAll('.falling-heart').forEach(h => h.remove());
+        function startPetalRain() {
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.innerHTML = '🌸';
+                petal.className = 'falling-petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                petal.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 4000);
+            }, 200);
         }
     </script>
 </body>
-
 </html>
