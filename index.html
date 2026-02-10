@@ -4,136 +4,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You | My Valentine</title>
+    <title>For You</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@1,400&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FFF5F5;
-            color: #1A1A1A;
-            overflow-x: hidden;
-            overscroll-behavior: none;
+        :root {
+            --rose-primary: #FB7185;
+            --rose-soft: #FFF9F9;
+            --text-main: #2C2C2C;
         }
 
-        .font-serif { font-family: 'Playfair Display', serif; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--rose-soft);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            letter-spacing: 0.05em;
+        }
 
-        /* Minimalist Grid Item */
+        .font-elegant {
+            font-family: 'Cormorant Garamond', serif;
+            font-variant-ligatures: common-ligatures;
+        }
+
+        /* Responsive Grid Styling */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
         .grid-item {
             aspect-ratio: 1/1;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
-            border: 1px solid #FFE4E6;
-            border-radius: 12px;
-            font-size: 1.5rem;
-            color: #FB7185;
+            background: #FFFFFF;
+            border-radius: 50%; /* Soft circles for minimalism */
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: var(--rose-primary);
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(251, 113, 133, 0.15);
         }
 
-        .grid-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(251, 113, 133, 0.2);
-            border-color: #FB7185;
+        .grid-item:active {
+            transform: scale(0.9);
+            background-color: var(--rose-soft);
         }
 
-        /* Petal Overlay Animation */
-        #petal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 100;
-            display: flex; flex-wrap: wrap;
-        }
-
-        .petal-transition {
-            width: 10vw; height: 10vh;
-            background: #FB7185;
-            transform: scale(0);
-            border-radius: 50% 0 50% 50%; /* Petal shape */
-        }
-
-        /* Success Card View */
-        #card-display {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            z-index: 150;
-            opacity: 0;
-            pointer-events: none;
-            width: 90%; max-width: 400px;
-            background: white;
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-
+        /* Falling Petals */
         .falling-petal {
             position: fixed;
-            top: -10%;
+            top: -5vh;
             pointer-events: none;
-            z-index: 99;
+            z-index: 1;
             animation: fall linear forwards;
         }
 
         @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
+            to { transform: translateY(105vh) rotate(360deg); }
+        }
+
+        /* Petal Transition Overlay */
+        #petal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 100;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+        }
+
+        .overlay-petal {
+            background: var(--rose-primary);
+            transform: scale(0);
+            border-radius: 50% 0 50% 50%;
+        }
+
+        /* Minimalist Modal */
+        #card-display {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            z-index: 150;
+            opacity: 0;
+            pointer-events: none;
+            width: 85%;
+            max-width: 320px;
+            background: white;
+            padding: 40px 25px;
+            border-radius: 2px; /* Sharp, modern minimalism */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border-top: 3px solid var(--rose-primary);
         }
 
         .hidden { display: none !important; }
+
+        /* Typography spacing fix */
+        .line-height-extra {
+            line-height: 1.8;
+        }
     </style>
 </head>
 
-<body class="h-screen w-screen flex flex-col items-center justify-center overflow-hidden">
+<body class="flex flex-col items-center justify-center">
 
     <iframe src="https://www.youtube.com/embed/P6yL6E_T7wM?autoplay=1&loop=1&playlist=P6yL6E_T7wM" class="hidden" allow="autoplay"></iframe>
 
     <div id="petal-overlay"></div>
 
-    <div id="main-content" class="z-10 text-center max-w-lg px-6 w-full">
-        <div id="initial-view" class="flex flex-col items-center gap-6">
-            <h1 class="text-4xl font-serif italic text-rose-500 mb-4">A letter for you...</h1>
-            <button id="open-btn" class="px-8 py-3 bg-rose-500 text-white rounded-full text-sm tracking-widest hover:bg-rose-600 transition-colors shadow-lg shadow-rose-200">
-                OPEN
+    <div id="main-content" class="relative z-10 w-full px-10 text-center">
+        
+        <div id="initial-view" class="flex flex-col items-center gap-10">
+            <h1 class="text-4xl md:text-5xl font-elegant italic font-light tracking-wide text-gray-800">
+                A handwritten note.
+            </h1>
+            <button id="open-btn" class="text-[10px] tracking-[0.4em] uppercase border-b border-rose-300 pb-1 text-rose-400 hover:text-rose-600 transition-all">
+                Read Message
             </button>
         </div>
 
-        <div id="question-view" class="hidden flex-col items-center gap-8 opacity-0">
-            <h1 id="question-text" class="text-2xl md:text-3xl font-serif text-gray-800 leading-relaxed min-h-[140px] flex items-center justify-center px-4"></h1>
+        <div id="question-view" class="hidden flex-col items-center gap-12 opacity-0">
+            <h1 id="question-text" class="text-2xl md:text-3xl font-elegant italic font-medium text-gray-700 line-height-extra min-h-[160px]"></h1>
             
-            <div id="buttons-container" class="hidden flex gap-4 w-full justify-center">
-                <button id="yes-btn" class="px-10 py-4 bg-rose-500 text-white rounded-full font-medium shadow-lg hover:scale-105 transition-transform">Yes, Always</button>
-                <button id="no-btn" class="px-10 py-4 border border-rose-200 text-rose-400 bg-white rounded-full font-medium shadow-sm">No thanks</button>
+            <div id="buttons-container" class="hidden flex gap-8 w-full justify-center">
+                <button id="yes-btn" class="text-[11px] tracking-[0.3em] uppercase text-rose-500 font-semibold">Yes</button>
+                <button id="no-btn" class="text-[11px] tracking-[0.3em] uppercase text-gray-300">No</button>
             </div>
 
-            <button id="next-msg-btn" class="mt-8 px-10 py-3 bg-rose-100 text-rose-500 rounded-full font-medium hover:bg-rose-200 transition-colors">
-                Continue ❤️
+            <button id="next-msg-btn" class="text-[10px] tracking-[0.4em] uppercase text-rose-300">
+                Continue
             </button>
         </div>
 
-        <div id="success-view" class="hidden flex-col items-center gap-8 opacity-0 w-full max-w-md">
-            <h1 class="text-2xl font-serif text-gray-400 italic">Select a number</h1>
-            <div class="grid grid-cols-3 gap-4 w-full px-4">
-                <div class="grid-item" onclick="showMessage(0)">1</div>
-                <div class="grid-item" onclick="showMessage(1)">2</div>
-                <div class="grid-item" onclick="showMessage(2)">3</div>
-                <div class="grid-item" onclick="showMessage(3)">4</div>
-                <div class="grid-item" onclick="showMessage(4)">5</div>
-                <div class="grid-item" onclick="showMessage(5)">6</div>
+        <div id="success-view" class="hidden flex-col items-center gap-10 opacity-0 w-full">
+            <h1 class="text-lg font-elegant italic text-gray-400">Pick a moment</h1>
+            <div class="grid-container">
+                <div class="grid-item" onclick="showMessage(0)">i</div>
+                <div class="grid-item" onclick="showMessage(1)">ii</div>
+                <div class="grid-item" onclick="showMessage(2)">iii</div>
+                <div class="grid-item" onclick="showMessage(3)">iv</div>
+                <div class="grid-item" onclick="showMessage(4)">v</div>
+                <div class="grid-item" onclick="showMessage(5)">vi</div>
             </div>
-            <p class="text-rose-300 text-xs tracking-widest uppercase">Tap to reveal my heart</p>
         </div>
     </div>
 
     <div id="card-display">
-        <div class="text-rose-500 text-4xl mb-4">♥</div>
-        <p id="card-text" class="text-xl font-serif italic text-gray-700 leading-relaxed"></p>
-        <button onclick="closeCard()" class="mt-8 text-rose-400 text-sm font-semibold tracking-tighter hover:text-rose-600 transition-colors">CLOSE</button>
+        <p id="card-text" class="text-xl font-elegant italic text-gray-600 line-height-extra"></p>
+        <button onclick="closeCard()" class="mt-10 text-[9px] tracking-[0.5em] uppercase text-gray-300 hover:text-rose-400">Back</button>
     </div>
 
     <script>
@@ -141,146 +172,101 @@
             "“Obi doba, m'ani agye wo ho.” You are the only one who truly understands my soul.",
             "If love was a song, you'd be my favorite melody, the one I'd play on repeat forever.",
             "Chale, they say Jollof is sweet, but your love is the only thing that satisfies my heart.",
-            "You are my Black Star—the brightest light in my sky, guiding me home wherever I am.",
-            "I don’t just want to be with you; I want to build a world where only you and I exist.",
+            "You are my Black Star—the brightest light in my sky, guiding me home.",
+            "I don’t just want to be with you; I want to build a world with only you.",
             "Will you be my Valentine?"
         ];
 
-        const noTexts = [
-            "Are you sure? 💔", "Think about it again...", "Is that your final answer?",
-            "My heart is trembling...", "I beg, don't do this to me.", "Look me in the eyes..."
-        ];
-
-        const secretMessages = [
-            "You are my greatest blessing.",
-            "Every day with you is a gift.",
-            "Your smile is my favorite view.",
-            "I choose you today and every day.",
-            "You are my home.",
-            "I love you beyond words."
-        ];
+        const noTexts = ["Are you sure?", "Think about it again.", "Look me in the eyes.", "..."];
+        const secretMessages = ["You are my blessing.", "You are my gift.", "You are my favorite view.", "I choose you always.", "You are my home.", "I love you truly."];
 
         let messageIndex = 0;
         let noCount = 0;
 
-        const openBtn = document.getElementById('open-btn');
-        const initialView = document.getElementById('initial-view');
-        const questionView = document.getElementById('question-view');
-        const questionText = document.getElementById('question-text');
-        const nextMsgBtn = document.getElementById('next-msg-btn');
-        const buttonsContainer = document.getElementById('buttons-container');
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
-        const successView = document.getElementById('success-view');
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.innerHTML = Math.random() > 0.5 ? '🌸' : '🌹';
+            petal.className = 'falling-petal';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = (Math.random() * 10 + 10) + 'px';
+            const duration = Math.random() * 5 + 4;
+            petal.style.animationDuration = duration + 's';
+            petal.style.opacity = Math.random() * 0.5 + 0.2;
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), duration * 1000);
+        }
+        setInterval(createPetal, 400);
 
-        // Initial Transition
-        openBtn.addEventListener('click', () => {
+        document.getElementById('open-btn').addEventListener('click', () => {
             anime({
                 targets: '#initial-view',
-                opacity: 0,
-                translateY: -20,
-                duration: 600,
+                opacity: 0, translateY: -10, duration: 800,
                 complete: () => {
-                    initialView.classList.add('hidden');
-                    questionView.classList.remove('hidden');
+                    document.getElementById('initial-view').classList.add('hidden');
+                    document.getElementById('question-view').classList.remove('hidden');
                     updateMessage();
-                    anime({ targets: '#question-view', opacity: 1, translateY: [20, 0], duration: 800 });
+                    anime({ targets: '#question-view', opacity: 1, translateY: [10, 0], duration: 1000 });
                 }
             });
         });
 
         function updateMessage() {
-            questionText.innerText = loveMessages[messageIndex];
+            document.getElementById('question-text').innerText = loveMessages[messageIndex];
             if (messageIndex === loveMessages.length - 1) {
-                nextMsgBtn.classList.add('hidden');
-                buttonsContainer.classList.remove('hidden');
+                document.getElementById('next-msg-btn').classList.add('hidden');
+                document.getElementById('buttons-container').classList.remove('hidden');
             }
         }
 
-        nextMsgBtn.addEventListener('click', () => {
+        document.getElementById('next-msg-btn').addEventListener('click', () => {
             messageIndex++;
             updateMessage();
-            anime({ targets: '#question-text', opacity: [0, 1], scale: [0.95, 1], duration: 500 });
+            anime({ targets: '#question-text', opacity: [0, 1], duration: 800, easing: 'easeOutQuad' });
         });
 
-        noBtn.addEventListener('click', () => {
+        document.getElementById('no-btn').addEventListener('click', () => {
             if (noCount < noTexts.length) {
-                questionText.innerText = noTexts[noCount];
+                document.getElementById('question-text').innerText = noTexts[noCount];
                 noCount++;
             } else {
-                // Remove the "Valentine" text and button on final No
-                questionText.innerText = "I understand. I'll always be here... 🥀";
-                buttonsContainer.classList.add('hidden');
+                document.getElementById('question-text').innerText = "I'll always be here.";
+                document.getElementById('buttons-container').classList.add('hidden');
             }
         });
 
-        yesBtn.addEventListener('click', () => {
-            triggerPetalTransition();
-        });
-
-        function triggerPetalTransition() {
+        document.getElementById('yes-btn').addEventListener('click', () => {
             const overlay = document.getElementById('petal-overlay');
-            overlay.innerHTML = '';
-            for (let i = 0; i < 100; i++) {
-                const petal = document.createElement('div');
-                petal.className = 'petal-transition';
-                overlay.appendChild(petal);
+            for(let i=0; i<100; i++) {
+                const p = document.createElement('div');
+                p.className = 'overlay-petal';
+                overlay.appendChild(p);
             }
-
+            
             anime({
-                targets: '.petal-transition',
-                scale: [0, 1.2],
-                rotate: '1turn',
-                delay: anime.stagger(10, {grid: [10, 10], from: 'center'}),
-                duration: 800,
-                easing: 'easeInOutQuad',
+                targets: '.overlay-petal',
+                scale: [0, 1.1],
+                duration: 900,
+                delay: anime.stagger(20, {grid: [10, 10], from: 'center'}),
                 complete: () => {
-                    questionView.classList.add('hidden');
-                    successView.classList.remove('hidden');
-                    successView.style.opacity = 1;
-                    
-                    anime({
-                        targets: '.petal-transition',
-                        opacity: 0,
-                        duration: 800,
-                        delay: 200,
-                        easing: 'linear'
-                    });
-                    startPetalRain();
+                    document.getElementById('question-view').classList.add('hidden');
+                    document.getElementById('success-view').classList.remove('hidden');
+                    document.getElementById('success-view').style.opacity = 1;
+                    anime({ targets: '.overlay-petal', opacity: 0, duration: 800, delay: 200 });
                 }
             });
-        }
+        });
 
         function showMessage(idx) {
             document.getElementById('card-text').innerText = secretMessages[idx];
-            const card = document.getElementById('card-display');
-            card.style.pointerEvents = 'auto';
-            anime({
-                targets: '#card-display',
-                opacity: 1,
-                scale: [0.8, 1],
-                duration: 600,
-                easing: 'easeOutBack'
-            });
+            const modal = document.getElementById('card-display');
+            modal.style.pointerEvents = 'auto';
+            anime({ targets: '#card-display', opacity: 1, translateY: [20, 0], scale: [0.95, 1], duration: 600 });
         }
 
         function closeCard() {
-            const card = document.getElementById('card-display');
-            card.style.pointerEvents = 'none';
-            anime({ targets: '#card-display', opacity: 0, scale: 0.8, duration: 400 });
-        }
-
-        function startPetalRain() {
-            setInterval(() => {
-                const petal = document.createElement('div');
-                petal.innerHTML = '🌸';
-                petal.className = 'falling-petal';
-                petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.fontSize = (Math.random() * 15 + 10) + 'px';
-                petal.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                document.body.appendChild(petal);
-                setTimeout(() => petal.remove(), 4000);
-            }, 200);
+            const modal = document.getElementById('card-display');
+            modal.style.pointerEvents = 'none';
+            anime({ targets: '#card-display', opacity: 0, translateY: 20, duration: 400 });
         }
     </script>
 </body>
