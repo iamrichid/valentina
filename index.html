@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You</title>
+    <title>For You | Ghana Special</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root { --rose-primary: #FB7185; --rose-soft: #FFF9F9; --text-main: #1A1A1A; }
         
@@ -31,18 +31,18 @@
             padding: 12px 0; 
             outline: none; 
             font-family: 'Cormorant Garamond', serif; 
-            font-size: 2rem; 
+            font-size: 2.2rem; 
             width: 100%; 
             text-align: center; 
         }
 
         .btn-choice { 
-            padding: 12px 20px; 
+            padding: 10px 16px; 
             border: 1px solid #E5E5E5; 
             border-radius: 50px; 
-            font-size: 11px; 
-            font-weight: 500;
-            letter-spacing: 0.15em; 
+            font-size: 10px; 
+            font-weight: 600;
+            letter-spacing: 0.1em; 
             text-transform: uppercase; 
             transition: 0.3s; 
         }
@@ -50,18 +50,17 @@
         .btn-choice.active { background: var(--rose-primary); color: white; border-color: var(--rose-primary); }
 
         #heart-trigger { 
-            font-size: 6.5rem; 
+            font-size: 7rem; 
             cursor: pointer; 
-            filter: drop-shadow(0 0 15px rgba(251, 113, 133, 0.3)); 
+            filter: drop-shadow(0 0 15px rgba(251, 113, 133, 0.4)); 
             -webkit-tap-highlight-color: transparent;
             position: relative;
-            z-index: 50; /* Ensure it stays above everything */
+            z-index: 999; 
         }
 
         .falling-petal { position: fixed; top: -5vh; pointer-events: none; z-index: 1; animation: fall linear forwards; opacity: 0.6; }
         @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
 
-        /* The Transition Overlay */
         #petal-overlay { 
             position: fixed; 
             top: 0; left: 0; 
@@ -78,10 +77,11 @@
         .hidden { display: none !important; }
         #yes-btn { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .lyrics-text { font-size: 2.2rem; line-height: 1.4; color: #2D2D2D; }
+        .lyrics-text { font-size: 2.5rem; line-height: 1.3; color: #1A1A1A; padding: 0 20px; }
 
         @media (max-width: 640px) {
-            .lyrics-text { font-size: 1.8rem; }
+            .lyrics-text { font-size: 2rem; }
+            #heart-trigger { font-size: 5.5rem; }
         }
     </style>
 </head>
@@ -94,44 +94,47 @@
         <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="setup-view" class="z-20 w-full max-w-sm px-8 flex flex-col gap-10 text-center">
-        <h1 class="text-4xl font-elegant italic">The Love Lab</h1>
+    <div id="setup-view" class="z-20 w-full max-w-md px-8 flex flex-col gap-10 text-center">
+        <h1 class="text-4xl font-elegant italic font-bold">The Love Lab</h1>
+        <p class="text-[10px] uppercase tracking-[0.3em] text-gray-400 -mt-6">Create a link for someone special</p>
+        
         <input type="text" id="target-name" class="setup-input" placeholder="Enter Their Name">
         
         <div class="flex flex-col gap-4">
-            <p class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-semibold">Relationship</p>
-            <div class="flex justify-center gap-3">
+            <p class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">Who is this for?</p>
+            <div class="flex flex-wrap justify-center gap-2">
                 <button onclick="setRel('lover')" id="rel-lover" class="btn-choice active">Lover</button>
                 <button onclick="setRel('crush')" id="rel-crush" class="btn-choice">Crush</button>
                 <button onclick="setRel('friend')" id="rel-friend" class="btn-choice">Friend</button>
+                <button onclick="setRel('enemy')" id="rel-enemy" class="btn-choice text-red-600 border-red-200">Enemy</button>
             </div>
         </div>
 
-        <button id="gen-btn" class="mt-4 py-5 bg-black text-white rounded-full text-[11px] tracking-[0.3em] uppercase font-bold shadow-2xl">Generate Link</button>
+        <button id="gen-btn" class="mt-4 py-5 bg-black text-white rounded-full text-[11px] tracking-[0.4em] uppercase font-bold shadow-2xl active:scale-95 transition-transform">Generate & Copy Link</button>
         <p id="copy-status" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest opacity-0">Link Copied! Send it on WhatsApp.</p>
     </div>
 
     <div id="experience-wrapper" class="hidden relative z-10 w-full px-8 text-center">
-        <div id="intro-view" class="flex flex-col items-center gap-12">
-            <h1 class="text-5xl font-elegant italic font-light text-gray-800" id="intro-title"></h1>
-            <button id="read-btn" class="text-[12px] tracking-[0.4em] uppercase border-b-2 border-rose-300 pb-2 text-rose-500 font-bold">Open Note</button>
+        <div id="intro-view" class="flex flex-col items-center gap-14">
+            <h1 class="text-5xl md:text-6xl font-elegant italic font-light text-gray-800" id="intro-title"></h1>
+            <button id="read-btn" class="text-[13px] tracking-[0.5em] uppercase border-b-2 border-rose-300 pb-2 text-rose-500 font-black">Open Note</button>
         </div>
 
-        <div id="question-view" class="hidden flex flex-col items-center gap-12 opacity-0">
-            <h1 id="question-text" class="lyrics-text font-elegant italic font-medium min-h-[180px] flex items-center justify-center"></h1>
-            <div id="buttons-container" class="hidden flex gap-10 w-full justify-center items-center">
-                <button id="yes-btn" class="text-[16px] tracking-[0.2em] uppercase text-rose-500 font-black">Yes</button>
-                <button id="no-btn" class="text-[14px] tracking-[0.2em] uppercase text-gray-300">No</button>
+        <div id="question-view" class="hidden flex flex-col items-center gap-14 opacity-0">
+            <h1 id="question-text" class="lyrics-text font-elegant italic font-medium min-h-[220px] flex items-center justify-center"></h1>
+            <div id="buttons-container" class="hidden flex gap-12 w-full justify-center items-center">
+                <button id="yes-btn" class="text-[18px] tracking-[0.2em] uppercase text-rose-500 font-black">Yes</button>
+                <button id="no-btn" class="text-[14px] tracking-[0.2em] uppercase text-gray-300 font-bold">No</button>
             </div>
-            <button id="next-msg-btn" class="text-[13px] tracking-[0.3em] uppercase text-rose-400 font-bold">Continue →</button>
+            <button id="next-msg-btn" class="text-[13px] tracking-[0.4em] uppercase text-rose-400 font-bold">Continue →</button>
         </div>
 
         <div id="success-view" class="hidden flex flex-col items-center gap-12 opacity-0">
             <div id="heart-trigger">❤️</div>
-            <div class="h-32 flex items-center justify-center">
-                <p id="final-message" class="text-3xl font-elegant italic text-gray-700 px-2"></p>
+            <div class="h-36 flex items-center justify-center">
+                <p id="final-message" class="text-3xl md:text-4xl font-elegant italic text-gray-700 px-2"></p>
             </div>
-            <p id="footer-note" class="text-[11px] tracking-[0.3em] uppercase text-gray-400 mt-6">Every tap is a promise</p>
+            <p id="footer-note" class="text-[11px] tracking-[0.4em] uppercase text-gray-400 mt-6">Every tap is a promise</p>
         </div>
     </div>
 
@@ -148,6 +151,10 @@
             friend: {
                 messages: ["Real ones are hard to find.", "Glad we're on the same vibe.", "Thank you for being there.", "You make life much more fun.", "Will you be my Bestie forever?"],
                 success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."]
+            },
+            enemy: {
+                messages: ["They say God bless our homeland...", "But I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "I'm the one God blessed. Agree?"],
+                success: ["Victory is mine.", "Keep watching the glory.", "You go tire for me.", "Psalm 23:5 always."]
             }
         };
 
@@ -156,6 +163,7 @@
         let flowIndex = 0;
         let yesScale = 1;
 
+        // LOAD LOGIC
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
             if (params.has('name')) {
@@ -173,11 +181,17 @@
         }
 
         document.getElementById('gen-btn').onclick = () => {
-            const name = document.getElementById('target-name').value || "Special One";
+            const name = document.getElementById('target-name').value || "Someone";
             const url = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(name)}&type=${config.type}`;
-            navigator.clipboard.writeText(url).then(() => {
-                document.getElementById('copy-status').style.opacity = 1;
-            });
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    document.getElementById('copy-status').style.opacity = 1;
+                    setTimeout(() => document.getElementById('copy-status').style.opacity = 0, 3000);
+                });
+            } else {
+                alert("Copy this link: " + url);
+            }
         };
 
         function startExperience() {
@@ -187,7 +201,7 @@
         }
 
         document.getElementById('read-btn').onclick = () => {
-            document.getElementById('bg-music').play().catch(() => console.log("Music blocked"));
+            document.getElementById('bg-music').play().catch(() => {});
             anime({ targets: '#intro-view', opacity: 0, duration: 600, complete: () => {
                 document.getElementById('intro-view').classList.add('hidden');
                 document.getElementById('question-view').classList.remove('hidden');
@@ -211,15 +225,15 @@
         };
 
         document.getElementById('no-btn').onclick = function() {
-            yesScale += 0.5;
+            yesScale += 0.6;
             document.getElementById('yes-btn').style.transform = `scale(${yesScale})`;
-            this.style.opacity = parseFloat(this.style.opacity || 1) - 0.25;
-            if(yesScale > 4) this.classList.add('hidden');
+            this.style.opacity = parseFloat(this.style.opacity || 1) - 0.2;
+            if(yesScale > 4.5) this.classList.add('hidden');
         };
 
         document.getElementById('yes-btn').onclick = () => {
             const overlay = document.getElementById('petal-overlay');
-            overlay.innerHTML = ''; // Clear previous
+            overlay.innerHTML = '';
             for(let i=0; i<100; i++) {
                 const p = document.createElement('div'); 
                 p.className = 'overlay-petal w-full h-full';
@@ -238,15 +252,13 @@
                     document.getElementById('success-view').style.opacity = 1;
                     document.getElementById('final-message').innerText = `Tap the heart, ${config.name}...`;
                     
-                    // FADE OUT OVERLAY SO WE CAN TAP
+                    // CLEAR THE OVERLAY BLOB SO WE CAN CLICK
                     anime({ 
                         targets: '#petal-overlay', 
                         opacity: 0, 
                         duration: 800, 
                         delay: 400,
-                        complete: () => {
-                            document.getElementById('petal-overlay').classList.add('hidden');
-                        }
+                        complete: () => document.getElementById('petal-overlay').classList.add('hidden')
                     });
                 }
             });
@@ -257,7 +269,7 @@
             const msgEl = document.getElementById('final-message');
             anime({ targets: '#heart-trigger', scale: [1, 1.3, 1], duration: 400 });
             
-            // Pop out a few petals on tap
+            // Burst petals on tap
             for(let i=0; i<3; i++) createPetal();
 
             anime({ targets: msgEl, opacity: 0, duration: 300, complete: () => {
@@ -272,7 +284,7 @@
             p.innerHTML = Math.random() > 0.5 ? '🌸' : '🌹'; 
             p.className = 'falling-petal';
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.fontSize = (Math.random() * 12 + 15) + 'px';
+            p.style.fontSize = (Math.random() * 12 + 18) + 'px';
             const d = Math.random() * 5 + 5;
             p.style.animationDuration = d + 's';
             document.body.appendChild(p);
