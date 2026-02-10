@@ -334,6 +334,10 @@
         yesBtn.addEventListener('click', triggerSuccess);
 
         function triggerSuccess() {
+        const mainContent = document.getElementById('main-content');
+mainContent.classList.remove('max-w-lg');
+mainContent.classList.add('max-w-none'); 
+document.body.style.overflowY = 'auto'; // Enable scrolling for the cards
             anime({
                 targets: questionView,
                 opacity: 0,
