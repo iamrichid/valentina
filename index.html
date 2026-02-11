@@ -7,7 +7,8 @@
     <title>OdoFlow | The Love Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500;700&display=swap"
         rel="stylesheet">
@@ -144,6 +145,43 @@
         div[style*="z-index: 5"] {
             filter: blur(1px) opacity(0.4);
         }
+
+        #momo-modal {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .admin-mode .price-btn.active {
+            background: #dcfce7 !important;
+            /* Green for admin */
+            border-color: #22c55e !important;
+        }
+
+        .admin-mode #action-btn {
+            background: #22c55e !important;
+        }
+
+        /* PREMIUM GOLD THEME */
+        .premium-mode {
+            --rose-primary: #D4AF37;
+            /* Gold */
+            --rose-soft: #FFFBF0;
+            /* Creamy Gold */
+            background: linear-gradient(135deg, #FFFBF0 0%, #FFF5D6 100%);
+        }
+
+        .premium-mode .text-rose-500,
+        .premium-mode .text-rose-400 {
+            color: #D4AF37 !important;
+        }
+
+        .premium-mode #read-btn {
+            border-color: #D4AF37 !important;
+        }
+
+        .premium-mode .overlay-petal {
+            background: #D4AF37 !important;
+        }
     </style>
 </head>
 
@@ -162,6 +200,10 @@
         </div>
 
         <input type="text" id="target-name" class="setup-input" placeholder="Their Name">
+        <input type="text" id="sender-name" class="setup-input" placeholder="Your Name (Optional)"
+            style="font-size: 1.5rem;">
+        <input type="text" id="secret-msg" class="setup-input text-base" placeholder="Secret P.S. (Optional)"
+            style="font-size: 1.2rem;">
 
         <div class="flex flex-col gap-3 text-left">
             <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold ml-2">Relationship</p>
@@ -192,10 +234,7 @@
             </div>
         </div>
 
-        <div id="email-container" class="hidden flex flex-col gap-2">
-            <input type="email" id="user-email" class="p-3 border rounded-xl text-xs outline-none focus:border-rose-400"
-                placeholder="Your Email (for receipt)">
-        </div>
+
 
         <button id="action-btn"
             class="py-5 bg-black text-white rounded-full text-[10px] tracking-[0.4em] uppercase font-bold shadow-xl">Generate
@@ -207,6 +246,7 @@
     <div id="experience-wrapper" class="hidden relative z-10 w-full px-8 text-center">
         <div id="intro-view" class="flex flex-col items-center gap-12">
             <h1 class="text-5xl font-elegant italic font-light text-gray-800" id="intro-title"></h1>
+            <p id="intro-subtitle" class="text-sm uppercase tracking-[0.2em] text-gray-400 mt-4 opacity-0"></p>
             <button id="read-btn"
                 class="text-[12px] tracking-[0.4em] uppercase border-b-2 border-rose-300 pb-2 text-rose-500 font-bold">Open
                 Note</button>
@@ -235,44 +275,155 @@
         </div>
     </div>
 
+    <!-- MoMo Modal -->
+    <div id="momo-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+            <h3 class="text-2xl font-elegant italic font-bold mb-6 text-gray-800">Pay with MoMo</h3>
+
+            <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left border border-gray-100">
+                <p class="text-[10px] uppercase text-gray-400 font-bold tracking-widest mb-1">Send To</p>
+                <p class="font-bold text-lg text-gray-800">059 279 7074</p>
+                <p class="text-xs text-gray-500 mb-4">Name: Richard</p>
+
+                <p class="text-[10px] uppercase text-gray-400 font-bold tracking-widest mb-1">Amount</p>
+                <p class="font-bold text-lg text-rose-500" id="modal-amount">₵0</p>
+            </div>
+
+            <p class="text-xs text-gray-500 mb-6 px-4">
+                After sending, click below to confirm via WhatsApp. I will send your link immediately.
+            </p>
+
+            <button onclick="sendToWhatsApp()"
+                class="w-full py-4 bg-[#25D366] text-white rounded-full text-[11px] font-bold uppercase tracking-[0.2em] shadow-lg mb-3">
+                Confirm on WhatsApp
+            </button>
+
+            <button onclick="document.getElementById('momo-modal').classList.add('hidden')"
+                class="text-[10px] text-gray-400 uppercase tracking-widest hover:text-gray-600">
+                Cancel
+            </button>
+        </div>
+    </div>
+
     <script>
         const themes = {
             lover: {
-                messages: ["“Obi doba, m'ani agye wo ho.”", "Chale, your love sweet pass Ghana Jollof.", "You are my Black Star—the brightest light.", "I want to build a world with only you.", "Will you be my Valentine?"],
-                success: ["You are my blessing.", "You are my home.", "Forever yours.", "I love you truly."]
+                tiers: {
+                    free: ["“Obi doba, m'ani agye wo ho.”", "Chale, your love sweet pass Ghana Jollof.", "You are my Black Star—the brightest light.", "I want to build a world with only you.", "Will you be my Valentine?"],
+                    basic: ["Every moment with you is a blessing.", "You make my heart beat faster.", "I can't imagine life without you.", "You are my favorite notification.", "Will you be my Valentine?"],
+                    sweet: ["You are the sugar in my koko.", "My love for you is bigger than the ocean.", "I promise to always be by your side.", "You are my everything, my Odo.", "Will you be my Valentine forever?"],
+                    heavy: ["My soul recognized you before my eyes did.", "I am yours, in this life and the next.", "You are the answered prayer I waited for.", "I love you more than words can carry.", "Will you be my eternal Valentine?"]
+                },
+                success: ["You are my blessing.", "You are my home.", "Forever yours.", "I love you truly."],
+                emojis: ['🌸', '🌹', '❤️', '💕'],
+                music: "https://www.bensound.com/bensound-music/bensound-love.mp3"
             },
             crush: {
-                messages: ["I’ve been shy to say this...", "Every time I see you, my heart skip beat.", "You be the only vibe I’m feeling lately.", "Could we be more than friends?", "Will you be my Valentine?"],
-                success: ["I'm glad I said it.", "You make me smile.", "Let's see where this goes.", "You're special."]
+                tiers: {
+                    free: ["I’ve been shy to say this...", "Every time I see you, my heart skip beat.", "You be the only vibe I’m feeling lately.", "Could we be more than friends?", "Will you be my Valentine?"],
+                    basic: ["I smile at my phone when it's you.", "I think about you more than you know.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
+                    sweet: ["You are the crush that never faded.", "I want to be the reason you smile.", "Let's stop pretending we're just friends.", "You have my heart already.", "Can I take you out?"],
+                    heavy: ["I am falling for you, hard.", "You remain the most beautiful mystery.", "I want to know every part of you.", "My heart chooses you, every time.", "Be mine, please?"]
+                },
+                success: ["I'm glad I said it.", "You make me smile.", "Let's see where this goes.", "You're special."],
+                emojis: ['😍', '👀', '✨', '💌'],
+                music: "https://www.bensound.com/bensound-music/bensound-love.mp3"
             },
             parent: {
-                messages: ["Everything I am is because of you.", "God really blessed me with the best.", "Thank you for the sacrifices I didn't see.", "Your prayers keep me going every day.", "Can I tell you I love you today?"],
-                success: ["You are my hero.", "God bless you always.", "The real GOAT.", "I appreciate you."]
+                tiers: {
+                    free: ["Everything I am is because of you.", "God really blessed me with the best.", "Thank you for the sacrifices I didn't see.", "Your prayers keep me going every day.", "Can I tell you I love you today?"],
+                    basic: ["You taught me what love really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you!"],
+                    sweet: ["Home is wherever you are.", "Your wisdom guides my every step.", "I am so proud to be your child.", "May God bless you abundantly.", "Love you always."],
+                    heavy: ["You gave me life and taught me to live.", "I owe you everything good in me.", "Your love is the purest I know.", "I will always take care of you.", "I love you deeply."]
+                },
+                success: ["You are my hero.", "God bless you always.", "The real GOAT.", "I appreciate you."],
+                emojis: ['👑', '🛡️', '💐', '🏡'],
+                music: "https://www.bensound.com/bensound-music/bensound-love.mp3"
             },
             sibling: {
-                messages: ["You’re annoying, but you're my person.", "I'd still share my last plantain with you.", "The best partner-in-crime since day one.", "Thanks for not telling Mom all my secrets.", "You know I love you, right?"],
-                success: ["Blood is thicker than water.", "Siblings by birth, friends by choice.", "Always my favorite person to annoy.", "Got your back forever."]
+                tiers: {
+                    free: ["You’re annoying, but you're my person.", "I'd still share my last plantain with you.", "The best partner-in-crime since day one.", "Thanks for not telling Mom all my secrets.", "You know I love you, right?"],
+                    basic: ["We fight, we make up, we ride.", "Life is better with you in it.", "You're my first best friend.", "Thanks for having my back.", "Love you, nuisance."],
+                    sweet: ["You know me better than anyone.", "I'm lucky to grow up with you.", "My favorite person to disturb.", "Always here for you.", "Love you!"],
+                    heavy: ["Blood makes us relatives, love makes us friends.", "I'd do anything for you.", "You are my keeper.", "Forever my partner in crime.", "Love you deep."]
+                },
+                success: ["Blood is thicker than water.", "Siblings by birth, friends by choice.", "Always my favorite person to annoy.", "Got your back forever."],
+                emojis: ['🎮', '🍕', '🤪', '🤛'],
+                music: "https://www.bensound.com/bensound-music/bensound-funny.mp3"
             },
             friend: {
-                messages: ["Real ones are hard to find.", "Glad we're on the same vibe.", "Thank you for being there.", "You make life much more fun.", "Will you be my Bestie forever?"],
-                success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."]
+                tiers: {
+                    free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "Thank you for being there.", "You make life much more fun.", "Will you be my Bestie forever?"],
+                    basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "Besties 4L?"],
+                    sweet: ["You are the family I chose.", "Life is boring without you.", "Thanks for being my listener.", "You're a rare gem.", "Love you friend!"],
+                    heavy: ["I don't know where I'd be without you.", "You saved me in ways you don't know.", "A true friend is a blessing.", "Forever grateful for you.", "Love you deep."]
+                },
+                success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."],
+                emojis: ['🥂', '🤝', '🌟', '👯'],
+                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3"
             },
             enemy: {
-                messages: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "I'm the one God blessed. Agree?"],
-                success: ["Victory is mine.", "Keep watching the glory.", "Psalm 23:5 always."]
+                tiers: {
+                    free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "I'm the one God blessed. Agree?"],
+                    basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
+                    sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", " Peace."],
+                    heavy: ["I forgive you.", "Let's leave the hate behind.", "Life is too short.", "I wish you well.", "God bless."]
+                },
+                success: ["Victory is mine.", "Keep watching the glory.", "Psalm 23:5 always."],
+                emojis: ['🐍', '🤡', '🚩', '💣'],
+                music: "https://www.bensound.com/bensound-music/bensound-epic.mp3"
             }
         };
-        let config = { name: "", type: "lover", amount: 0 };
+        let config = { name: "", sender: "", type: "lover", tier: "free", amount: 0 };
+        let isAdmin = false;
+
+        const SECRET_KEY = "OdoFlow_Val_2026_Secret"; // Simple obfuscation key
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
-            if (params.has('name')) {
+
+            // 1. Try to decrypt 'data' param first
+            if (params.has('data')) {
+                const decrypted = decryptData(params.get('data'));
+                if (decrypted) {
+                    config = { ...config, ...decrypted };
+                    startExperience();
+                }
+            }
+            // 2. Fallback to legacy params (name, type, tier)
+            else if (params.has('name')) {
                 config.name = params.get('name');
                 config.type = params.get('type') || 'lover';
+                config.tier = params.get('tier') || 'free';
                 startExperience();
+            }
+
+            // ADMIN ACCESS: Obfuscated Check
+            // We hash the input and compare it to the known hash of the secret code.
+            const adminInput = params.get('admin');
+            // Hash of "richard"
+            const secretHash = "61bffea9215f65164ad18b45aff1436c0c165d0d5dd2087ef61b4232ba6d2c1a";
+
+            if (adminInput && CryptoJS.SHA256(adminInput).toString() === secretHash) {
+                isAdmin = true;
+                document.body.classList.add('admin-mode');
             }
             setInterval(createPetal, 450);
         };
+
+        // --- ENCRYPTION HELPERS ---
+        function encryptData(data) {
+            try {
+                return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+            } catch (e) { console.error("Encrypt Error", e); return null; }
+        }
+
+        function decryptData(ciphertext) {
+            try {
+                const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET_KEY);
+                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+            } catch (e) { console.error("Decrypt Error", e); return null; }
+        }
 
         function setRel(t) {
             config.type = t;
@@ -281,19 +432,27 @@
         }
 
         function setPrice(amt) {
-            config.amount = amt * 100;
+            config.amount = amt;
+            // Map amount to tier
+            if (amt === 0) config.tier = "free";
+            else if (amt === 2) config.tier = "basic";
+            else if (amt === 5) config.tier = "sweet";
+            else if (amt === 10) config.tier = "heavy";
+
             document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`p-${amt}`).classList.add('active');
 
             const btn = document.getElementById('action-btn');
-            const emailCont = document.getElementById('email-container');
+
+            if (isAdmin) {
+                btn.innerText = `Generate Admin Link (${config.tier})`;
+                return;
+            }
 
             if (amt === 0) {
                 btn.innerText = "Generate Free Link";
-                emailCont.classList.add('hidden');
             } else {
-                btn.innerText = `Unlock ₵${amt} Premium Link`;
-                emailCont.classList.remove('hidden');
+                btn.innerText = `Pay ₵${amt} with MoMo`;
             }
         }
 
@@ -301,43 +460,109 @@
             const name = document.getElementById('target-name').value;
             if (!name) { alert("Enter a name first!"); return; }
 
+            if (isAdmin) {
+                generateLink();
+                return;
+            }
+
             if (config.amount === 0) {
                 generateLink();
             } else {
-                const email = document.getElementById('user-email').value;
-                if (!email) { alert("Email required for Premium!"); return; }
-                payWithPaystack(email);
+                openMoMoModal();
             }
         };
 
-        function payWithPaystack(email) {
-            let handler = PaystackPop.setup({
-                key: 'pk_live_YOUR_KEY_HERE',
-                email: email,
-                amount: config.amount,
-                currency: 'GHS',
-                callback: function (response) { generateLink(); },
-                onClose: function () { alert('Payment cancelled.'); }
-            });
-            handler.openIframe();
+        function openMoMoModal() {
+            document.getElementById('modal-amount').innerText = `₵${config.amount}`;
+            document.getElementById('momo-modal').classList.remove('hidden');
+        }
+
+        function sendToWhatsApp() {
+            // Update config with current inputs
+            config.name = document.getElementById('target-name').value;
+            config.sender = document.getElementById('sender-name').value;
+
+            if (!config.name) { alert("Please enter a name first!"); return; }
+
+            const myNumber = "233592797074"; // Your number
+            let text = `Hi, I just sent ₵${config.amount} for a '${config.type}' note (${config.tier}) for ${config.name}.`;
+
+            if (config.sender) {
+                text += ` From: ${config.sender}.`;
+            }
+
+            text += ` Please activate my link.`;
+
+            const url = `https://wa.me/${myNumber}?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
         }
 
         function generateLink() {
-            const name = document.getElementById('target-name').value;
-            const url = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(name)}&type=${config.type}`;
+            // Create data object
+            const data = {
+                name: document.getElementById('target-name').value,
+                sender: document.getElementById('sender-name').value,
+                type: config.type,
+                tier: config.tier
+            };
+
+            // Encrypt it
+            const encryptedParams = encryptData(data);
+
+            // Base URL Strategy:
+            // 1. If we are on ANY variant of Netlify (e.g. deploy preview or production), use THAT url.
+            // 2. If we are on localhost or file://, force the LIVE production URL.
+            let baseUrl = "https://valentilove.netlify.app";
+
+            if (window.location.hostname.includes("netlify.app")) {
+                baseUrl = window.location.origin + window.location.pathname;
+            }
+
+            const url = `${baseUrl}?data=${encodeURIComponent(encryptedParams)}`;
+
             navigator.clipboard.writeText(url).then(() => {
-                document.getElementById('copy-status').style.opacity = 1;
+                const status = document.getElementById('copy-status');
+                status.innerText = isAdmin ? "Admin Link Copied!" : "Link Copied! Send it now.";
+                status.style.opacity = 1;
+            }).catch(err => {
+                console.error("Clipboard failed", err);
+                prompt("Copy this link:", url);
             });
         }
+
+
 
         function startExperience() {
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('experience-wrapper').classList.remove('hidden');
-            document.getElementById('intro-title').innerText = `A note for ${config.name}.`;
+
+            // Premium Logic
+            if (config.tier === 'heavy') {
+                document.body.classList.add('premium-mode');
+
+                // Add Sender signature to success messages if sender exists
+                if (config.sender) {
+                    themes[config.type].success.push(`Love, ${config.sender}`);
+                }
+            }
+
+            typeWriter('intro-title', `A note for ${config.name}.`);
+
+            if (config.sender) {
+                const sub = document.getElementById('intro-subtitle');
+                sub.innerText = `FROM ${config.sender}`;
+                sub.classList.remove('opacity-0');
+                anime({ targets: '#intro-subtitle', opacity: 1, delay: 1000, duration: 1000 });
+            }
+
+            // Set music based on theme
+            const audio = document.getElementById('bg-music');
+            audio.src = themes[config.type].music;
+            audio.load();
         }
 
         document.getElementById('read-btn').onclick = () => {
-            document.getElementById('bg-music').play().catch(() => { });
+            document.getElementById('bg-music').play().catch(() => { console.log('Autoplay blocked'); });
             anime({
                 targets: '#intro-view', opacity: 0, duration: 600, complete: () => {
                     document.getElementById('intro-view').classList.add('hidden');
@@ -349,17 +574,33 @@
         };
 
         function showNext() {
-            const list = themes[config.type].messages;
-            document.getElementById('question-text').innerText = list[msgIndex];
+            const list = themes[config.type].tiers[config.tier];
+            typeWriter('question-text', list[msgIndex], 50);
+
             if (msgIndex === list.length - 1) {
                 document.getElementById('next-msg-btn').classList.add('hidden');
                 document.getElementById('buttons-container').classList.remove('hidden');
             }
         }
 
+        // New Typewriter Helper
+        function typeWriter(elementId, text, speed = 50) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = ''; // Clear content
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
         document.getElementById('next-msg-btn').onclick = () => {
             msgIndex++; showNext();
-            anime({ targets: '#question-text', opacity: [0, 1], duration: 400 });
         };
 
         document.getElementById('no-btn').onclick = function () {
@@ -371,8 +612,18 @@
 
         document.getElementById('yes-btn').onclick = () => {
             const overlay = document.getElementById('petal-overlay');
+            let emojis = themes[config.type].emojis;
+
+            // Premium Emojis
+            if (config.tier === 'heavy') {
+                emojis = ['✨', '🌟', '💛', '🏵️', '👑'];
+            }
+
             for (let i = 0; i < 100; i++) {
-                const p = document.createElement('div'); p.className = 'overlay-petal w-full h-full';
+                const p = document.createElement('div');
+                p.className = 'overlay-petal w-full h-full flex items-center justify-center text-4xl';
+                p.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                p.style.background = 'transparent'; // Remove background color
                 overlay.appendChild(p);
             }
             anime({
@@ -391,7 +642,7 @@
             const list = themes[config.type].success;
             const msgEl = document.getElementById('final-message');
             anime({ targets: '#heart-trigger', scale: [1, 1.3, 1], duration: 400 });
-            for (let i = 0; i < 3; i++) createPetal();
+            for (let i = 0; i < 5; i++) createPetal(); // Increased count for effect
             anime({
                 targets: msgEl, opacity: 0, duration: 300, complete: () => {
                     msgEl.innerText = list[flowIndex];
@@ -404,22 +655,24 @@
         let msgIndex = 0, flowIndex = 0;
         function createPetal() {
             const petal = document.createElement('div');
-            const isFlower = Math.random() > 0.5;
+            let emojis = themes[config.type].emojis || ['🌸', '🌹'];
 
-            // Randomize appearance
-            petal.innerHTML = isFlower ? '🌸' : '🌹';
+            if (config.tier === 'heavy') {
+                emojis = ['✨', '🌟', '💛', '🏵️', '👑'];
+            }
+
+            petal.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
             petal.style.position = 'fixed';
             petal.style.top = '-50px';
             petal.style.left = Math.random() * 100 + 'vw';
             petal.style.fontSize = (Math.random() * 15 + 10) + 'px';
-            petal.style.zIndex = Math.random() > 0.5 ? '5' : '30'; // Depth effect
+            petal.style.zIndex = Math.random() > 0.5 ? '5' : '30';
             petal.style.pointerEvents = 'none';
             petal.style.userSelect = 'none';
             petal.style.opacity = Math.random() * 0.5 + 0.3;
 
             document.body.appendChild(petal);
 
-            // Anime.js Animation
             anime({
                 targets: petal,
                 translateY: '110vh',
@@ -437,13 +690,12 @@
                     duration: 5000,
                     easing: 'linear'
                 },
-                duration: Math.random() * 4000 + 6000, // Duration between 6-10 seconds
+                duration: Math.random() * 4000 + 6000,
                 easing: 'linear',
                 complete: () => petal.remove()
             });
         }
 
-        // Update your window.onload or simply call this:
         setInterval(createPetal, 600);
     </script>
 </body>
