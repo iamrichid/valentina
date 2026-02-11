@@ -27,6 +27,7 @@
             overflow: hidden;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
@@ -41,9 +42,27 @@
             padding: 12px 0;
             outline: none;
             font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
+            font-size: 1.5rem;
+            /* Standardized size */
             width: 100%;
             text-align: center;
+            color: var(--text-main);
+        }
+
+        .setup-input::placeholder {
+            color: #A0A0A0;
+            /* Lighter gray for placeholder */
+            opacity: 1;
+        }
+
+        /* Fix Chrome Autofill Yellow Background */
+        .setup-input:-webkit-autofill,
+        .setup-input:-webkit-autofill:hover,
+        .setup-input:-webkit-autofill:focus,
+        .setup-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            -webkit-text-fill-color: var(--text-main) !important;
+            transition: background-color 5000s ease-in-out 0s;
         }
 
         .btn-choice {
@@ -182,6 +201,100 @@
         .premium-mode .overlay-petal {
             background: #D4AF37 !important;
         }
+
+        /* SWEET PINK THEME */
+        .sweet-mode {
+            --rose-primary: #FF69B4;
+            /* Hot Pink */
+            --rose-soft: #FFF0F5;
+            /* Lavender Blush */
+            background: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+        }
+
+        .sweet-mode .falling-petal {
+            animation: floatUp 8s linear forwards;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(110vh) scale(0.5);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(-10vh) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Text Shimmer Effect (Premium) */
+        .text-shimmer {
+            background: linear-gradient(to right, #D4AF37 20%, #FFF5D6 40%, #D4AF37 60%, #B8860B 80%);
+            background-size: 200% auto;
+            color: transparent !important;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        /* Pulse Text Effect (Sweet) */
+        .text-pulse {
+            animation: pulseText 2s infinite;
+            color: #FF1493;
+            /* Deep Pink */
+        }
+
+        @keyframes pulseText {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(255, 20, 147, 0);
+            }
+
+            50% {
+                transform: scale(1.02);
+                text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+            }
+
+            100% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(255, 20, 147, 0);
+            }
+        }
+
+        /* Typewriter Cursor */
+        .cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+            color: var(--rose-primary);
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -193,19 +306,26 @@
     </audio>
 
     <div id="setup-view"
-        class="z-20 w-full max-w-sm px-8 flex flex-col gap-8 text-center bg-white py-10 rounded-[2rem] shadow-sm mx-4 overflow-y-auto max-h-[90vh]">
-        <div class="flex flex-col items-center gap-2">
-            <h1 class="text-3xl font-elegant italic font-bold text-rose-500">OdoFlow</h1>
+        class="z-20 w-full h-full sm:h-auto sm:max-w-sm px-6 flex flex-col gap-4 text-center bg-white py-6 sm:rounded-[2rem] shadow-sm overflow-y-auto fade-in-up pb-24">
+        <div class="flex flex-col items-center gap-1">
+            <h1 class="text-2xl font-elegant italic font-bold text-rose-500">OdoFlow</h1>
             <p class="text-[9px] uppercase tracking-[0.4em] text-gray-400">The Love Lab</p>
         </div>
 
         <input type="text" id="target-name" class="setup-input" placeholder="Their Name">
-        <input type="text" id="sender-name" class="setup-input" placeholder="Your Name (Optional)"
-            style="font-size: 1.5rem;">
-        <input type="text" id="secret-msg" class="setup-input text-base" placeholder="Secret P.S. (Optional)"
-            style="font-size: 1.2rem;">
 
-        <div class="flex flex-col gap-3 text-left">
+        <!-- Sender Inputs (Always Visible) -->
+        <div id="sender-inputs" class="w-full flex flex-col gap-2">
+            <input type="text" id="sender-name" class="setup-input" placeholder="Your Name">
+        </div>
+
+        <!-- WhatsApp Input (Always Visible) -->
+        <div id="whatsapp-inputs" class="w-full flex flex-col gap-2">
+            <input type="tel" id="sender-phone" class="setup-input" placeholder="Your WhatsApp (For Reply)">
+        </div>
+
+
+        <div class="flex flex-col gap-2 text-left">
             <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold ml-2">Relationship</p>
             <div class="flex flex-wrap justify-center gap-2">
                 <button onclick="setRel('lover')" id="rel-lover" class="btn-choice active">Lover</button>
@@ -217,7 +337,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col gap-3 text-left">
+        <div class="flex flex-col gap-2 text-left">
             <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold ml-2">Tier</p>
             <div class="grid grid-cols-4 gap-2">
                 <button onclick="setPrice(0)" id="p-0" class="price-btn active"><span
@@ -233,14 +353,24 @@
                         class="text-[7px] uppercase">Heavy</span></button>
             </div>
         </div>
+        <p id="tier-description" class="text-[10px] text-gray-500 italic px-4 mt-2 h-8 leading-tight">
+            Standard romantic notes.
+        </p>
+        <div class="mt-auto w-full pt-6">
+            <button id="action-btn"
+                class="w-full py-5 bg-black text-white rounded-full text-[10px] tracking-[0.4em] uppercase font-bold shadow-xl transition transform active:scale-95">Generate
+                Free Link</button>
+            <p id="copy-status" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest opacity-0 mt-2">
+                Link Copied!
+                Send it now.</p>
 
-
-
-        <button id="action-btn"
-            class="py-5 bg-black text-white rounded-full text-[10px] tracking-[0.4em] uppercase font-bold shadow-xl">Generate
-            Free Link</button>
-        <p id="copy-status" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest opacity-0">Link Copied!
-            Send it now.</p>
+            <div class="mt-2 pt-4 border-t border-gray-100 w-full">
+                <a href="https://github.com/iamrichid" target="_blank"
+                    class="block text-[8px] text-gray-300 hover:text-rose-400 font-bold uppercase tracking-widest transition">
+                    Built by Richard
+                </a>
+            </div>
+        </div>
     </div>
 
     <div id="experience-wrapper" class="hidden relative z-10 w-full px-8 text-center">
@@ -269,6 +399,9 @@
             <div class="h-32 flex items-center justify-center">
                 <p id="final-message" class="text-3xl font-elegant italic text-gray-700 px-2"></p>
             </div>
+            <button id="reply-btn"
+                class="hidden text-[12px] tracking-[0.3em] uppercase bg-[#25D366] text-white px-8 py-3 rounded-full shadow-lg font-bold hover:scale-105 transition">Send
+                My Reply 💖</button>
             <button onclick="location.href=location.pathname"
                 class="text-[10px] tracking-[0.3em] uppercase text-rose-400 border border-rose-100 px-6 py-2 rounded-full">Create
                 Your Own</button>
@@ -374,7 +507,7 @@
                 music: "https://www.bensound.com/bensound-music/bensound-epic.mp3"
             }
         };
-        let config = { name: "", sender: "", type: "lover", tier: "free", amount: 0 };
+        let config = { name: "", sender: "", senderPhone: "", type: "lover", tier: "free", amount: 0 };
         let isAdmin = false;
 
         const SECRET_KEY = "OdoFlow_Val_2026_Secret"; // Simple obfuscation key
@@ -440,9 +573,18 @@
             else if (amt === 10) config.tier = "heavy";
 
             document.querySelectorAll('.price-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`p-${amt}`).classList.add('active');
-
             const btn = document.getElementById('action-btn');
+            const desc = document.getElementById('tier-description');
+            const inputs = document.getElementById('sender-inputs');
+
+            // Toggle Sender Name Visibility (Tier 5+) - REMOVED (Always Visible)
+
+            // Toggle WhatsApp Visibility (Tier 10+) - REMOVED (Always Visible)
+
+            // INSTANT PREVIEW LOGIC
+            document.body.classList.remove('premium-mode', 'sweet-mode');
+            if (config.tier === 'heavy') document.body.classList.add('premium-mode');
+            if (config.tier === 'sweet') document.body.classList.add('sweet-mode');
 
             if (isAdmin) {
                 btn.innerText = `Generate Admin Link (${config.tier})`;
@@ -451,10 +593,21 @@
 
             if (amt === 0) {
                 btn.innerText = "Generate Free Link";
-            } else {
+                desc.innerText = "Standard romantic notes.";
+            } else if (amt === 2) {
                 btn.innerText = `Pay ₵${amt} with MoMo`;
+                desc.innerText = "Sweeter messages. Deeper feelings.";
+            } else if (amt === 5) {
+                btn.innerText = `Pay ₵${amt} with MoMo`;
+                desc.innerText = "💖 PINK THEME + Floating Hearts + Very Romantic.";
+            } else if (amt === 10) {
+                btn.innerText = `Pay ₵${amt} with MoMo`;
+                desc.innerText = "👑 GOLD THEME + Your Name Signed + VIP Emojis + The Deepest Love Letters.";
             }
         }
+
+        // Initialize description on load
+        setPrice(0);
 
         document.getElementById('action-btn').onclick = () => {
             const name = document.getElementById('target-name').value;
@@ -502,6 +655,7 @@
             const data = {
                 name: document.getElementById('target-name').value,
                 sender: document.getElementById('sender-name').value,
+                senderPhone: document.getElementById('sender-phone').value,
                 type: config.type,
                 tier: config.tier
             };
@@ -536,14 +690,14 @@
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('experience-wrapper').classList.remove('hidden');
 
-            // Premium Logic
+            // Premium & Sweet Logic
             if (config.tier === 'heavy') {
                 document.body.classList.add('premium-mode');
-
-                // Add Sender signature to success messages if sender exists
-                if (config.sender) {
-                    themes[config.type].success.push(`Love, ${config.sender}`);
-                }
+                document.getElementById('intro-title').classList.add('text-shimmer'); // Add shimmer
+                if (config.sender) themes[config.type].success.push(`Love, ${config.sender}`);
+            } else if (config.tier === 'sweet') {
+                document.body.classList.add('sweet-mode');
+                document.getElementById('intro-title').classList.add('text-pulse'); // Add pulse
             }
 
             typeWriter('intro-title', `A note for ${config.name}.`);
@@ -553,6 +707,16 @@
                 sub.innerText = `FROM ${config.sender}`;
                 sub.classList.remove('opacity-0');
                 anime({ targets: '#intro-subtitle', opacity: 1, delay: 1000, duration: 1000 });
+            }
+
+            // Reply Button Logic
+            if (config.senderPhone) {
+                const btn = document.getElementById('reply-btn');
+                btn.classList.remove('hidden');
+                btn.onclick = () => {
+                    const text = `Yes! I will be your Valentine... 💖`;
+                    window.open(`https://wa.me/${config.senderPhone}?text=${encodeURIComponent(text)}`, '_blank');
+                };
             }
 
             // Set music based on theme
@@ -583,17 +747,19 @@
             }
         }
 
-        // New Typewriter Helper
+        // New Typewriter Helper with Cursor
         function typeWriter(elementId, text, speed = 50) {
             const element = document.getElementById(elementId);
-            element.innerHTML = ''; // Clear content
+            element.innerHTML = '<span class="cursor"></span>'; // Start with cursor
             let i = 0;
 
             function type() {
                 if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
+                    element.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
                     i++;
                     setTimeout(type, speed);
+                } else {
+                    element.innerHTML = text; // Remove cursor at end
                 }
             }
             type();
@@ -659,6 +825,8 @@
 
             if (config.tier === 'heavy') {
                 emojis = ['✨', '🌟', '💛', '🏵️', '👑'];
+            } else if (config.tier === 'sweet') {
+                emojis = ['❤️', '💖', '💝', '💕', '💓'];
             }
 
             petal.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
@@ -673,27 +841,44 @@
 
             document.body.appendChild(petal);
 
-            anime({
-                targets: petal,
-                translateY: '110vh',
-                translateX: [
-                    { value: (Math.random() - 0.5) * 200, duration: 4000, easing: 'easeInOutSine' },
-                    { value: (Math.random() - 0.5) * 200, duration: 4000, easing: 'easeInOutSine' }
-                ],
-                rotateZ: {
-                    value: Math.random() * 360,
-                    duration: 8000,
-                    easing: 'linear'
-                },
-                rotateX: {
-                    value: Math.random() * 720,
-                    duration: 5000,
-                    easing: 'linear'
-                },
-                duration: Math.random() * 4000 + 6000,
-                easing: 'linear',
-                complete: () => petal.remove()
-            });
+            // Sweet Mode Animation Override (Float Up)
+            if (config.tier === 'sweet') {
+                anime({
+                    targets: petal,
+                    translateY: ['110vh', '-10vh'],
+                    translateX: {
+                        value: () => (Math.random() - 0.5) * 400,
+                        duration: 8000
+                    },
+                    scale: [0.5, 1.5],
+                    opacity: [0, 1, 0],
+                    duration: Math.random() * 5000 + 8000,
+                    easing: 'linear',
+                    complete: () => petal.remove()
+                });
+            } else {
+                anime({
+                    targets: petal,
+                    translateY: '110vh',
+                    translateX: [
+                        { value: (Math.random() - 0.5) * 200, duration: 4000, easing: 'easeInOutSine' },
+                        { value: (Math.random() - 0.5) * 200, duration: 4000, easing: 'easeInOutSine' }
+                    ],
+                    rotateZ: {
+                        value: Math.random() * 360,
+                        duration: 8000,
+                        easing: 'linear'
+                    },
+                    rotateX: {
+                        value: Math.random() * 720,
+                        duration: 5000,
+                        easing: 'linear'
+                    },
+                    duration: Math.random() * 4000 + 6000,
+                    easing: 'linear',
+                    complete: () => petal.remove()
+                });
+            }
         }
 
         setInterval(createPetal, 600);
