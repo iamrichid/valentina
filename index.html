@@ -307,9 +307,8 @@
 
     <div id="setup-view"
         class="z-20 w-full h-full sm:h-auto sm:max-w-sm px-6 flex flex-col gap-4 text-center bg-white py-6 sm:rounded-[2rem] shadow-sm overflow-y-auto fade-in-up pb-24">
-        <div class="flex flex-col items-center gap-1">
-            <h1 class="text-2xl font-elegant italic font-bold text-rose-500">OdoFlow</h1>
-            <p class="text-[9px] uppercase tracking-[0.4em] text-gray-400">The Love Lab</p>
+        <div class="flex flex-col items-center gap-2">
+            <img src="logo.png" alt="OdoFlow Logo" class="w-32 h-auto drop-shadow-md">
         </div>
 
         <input type="text" id="target-name" class="setup-input" placeholder="Their Name">
@@ -331,8 +330,11 @@
                 <button onclick="setRel('lover')" id="rel-lover" class="btn-choice active">Lover</button>
                 <button onclick="setRel('crush')" id="rel-crush" class="btn-choice">Crush</button>
                 <button onclick="setRel('parent')" id="rel-parent" class="btn-choice">Parent</button>
+                <button onclick="setRel('child')" id="rel-child" class="btn-choice">Child</button>
                 <button onclick="setRel('sibling')" id="rel-sibling" class="btn-choice">Sibling</button>
                 <button onclick="setRel('friend')" id="rel-friend" class="btn-choice">Friend</button>
+                <button onclick="setRel('colleague')" id="rel-colleague" class="btn-choice">Colleague</button>
+                <button onclick="setRel('boss')" id="rel-boss" class="btn-choice">Boss</button>
                 <button onclick="setRel('enemy')" id="rel-enemy" class="btn-choice">Enemy</button>
             </div>
         </div>
@@ -473,6 +475,17 @@
                 emojis: ['👑', '🛡️', '💐', '🏡'],
                 music: "https://www.bensound.com/bensound-music/bensound-love.mp3"
             },
+            child: {
+                tiers: {
+                    free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little blessing.", "Love you, kiddo!"],
+                    basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you son/daughter!"],
+                    sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."],
+                    heavy: ["My love for you has no conditions.", "I will move mountains for you.", "You are my heart walking outside my body.", "Forever my baby.", "I love you deep."]
+                },
+                success: ["My pride and joy.", "Shine on.", "Love you always.", "You're the best."],
+                emojis: ['🌞', '🧸', '🎈', '🐣'],
+                music: "https://www.bensound.com/bensound-music/bensound-ukulele.mp3"
+            },
             sibling: {
                 tiers: {
                     free: ["You’re annoying, but you're my person.", "I'd still share my last plantain with you.", "The best partner-in-crime since day one.", "Thanks for not telling Mom all my secrets.", "You know I love you, right?"],
@@ -494,6 +507,28 @@
                 success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."],
                 emojis: ['🥂', '🤝', '🌟', '👯'],
                 music: "https://www.bensound.com/bensound-music/bensound-energy.mp3"
+            },
+            colleague: {
+                tiers: {
+                    free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Coffee on me soon?", "Best work buddy."],
+                    basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
+                    sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."],
+                    heavy: ["I genuinely admire your work ethic.", "You inspire me to do better.", "A true professional and a friend.", "Thanks for the mentorship.", "You're a legend."]
+                },
+                success: ["Work besties.", "See you at the office.", "Keep winning.", "You're appreciated."],
+                emojis: ['💼', '☕', '💻', '📈'],
+                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3"
+            },
+            boss: {
+                tiers: {
+                    free: ["Happy Valentine's Day, Boss!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
+                    basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
+                    sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."],
+                    heavy: ["I genuinely appreciate your mentorship.", "You've changed my career path.", "Thank you for your wisdom.", "A visionary leader.", "Respect always."]
+                },
+                success: ["Respect, Boss.", "Thank you.", "Great leadership.", "To more wins."],
+                emojis: ['👔', '🚀', '🎯', '🤝'],
+                music: "https://www.bensound.com/bensound-music/bensound-corporate.mp3"
             },
             enemy: {
                 tiers: {
