@@ -10,17 +10,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Google tag (gtag.js) -->
-    <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8F8EZ86LKB"></script>
-        <script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8F8EZ86LKB"></script>
+    <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-8F8EZ86LKB');
-        </script>
+    </script>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500;700&display=swap"
@@ -183,15 +183,7 @@
             backdrop-filter: blur(5px);
         }
 
-        .admin-mode .price-btn.active {
-            background: #dcfce7 !important;
-            /* Green for admin */
-            border-color: #22c55e !important;
-        }
 
-        .admin-mode #action-btn {
-            background: #22c55e !important;
-        }
 
         /* PREMIUM GOLD THEME */
         .premium-mode {
@@ -399,6 +391,17 @@
             <button id="action-btn"
                 class="w-full py-5 bg-black text-white rounded-full text-[10px] tracking-[0.4em] uppercase font-bold shadow-xl transition transform active:scale-95">Generate
                 Free Link</button>
+
+            <div id="result-container" class="hidden flex flex-col gap-4 w-full mt-4 items-center">
+                <input type="text" id="share-link-input" readonly
+                    class="w-full text-center text-rose-500 text-sm border border-rose-200 rounded-lg py-3 px-4 bg-rose-50 focus:outline-none select-all"
+                    value="">
+                <button id="copy-link-btn"
+                    class="w-full text-xs tracking-[0.2em] uppercase bg-rose-500 text-white py-3 rounded-lg hover:bg-rose-600 transition shadow-md">
+                    Copy Link 📋
+                </button>
+            </div>
+
             <p id="copy-status" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest opacity-0 mt-2">
                 Link Copied!
                 Send it now.</p>
@@ -447,7 +450,7 @@
         </div>
     </div>
 
-    <!-- Paystack Modal replaced by inline script -->
+
 
     <script>
         const themes = {
@@ -552,15 +555,56 @@
             }
         };
         let config = { name: "", sender: "", senderPhone: "", senderEmail: "", type: "lover", tier: "free", amount: 0 };
-        let isAdmin = false;
+
 
         const SECRET_KEY = "OdoFlow_Val_2026_Secret"; // Simple obfuscation key
 
-        window.onload = () => {
+        // --- SUPABASE INTEGRATION ---
+        const SUPABASE_URL = "https://efchxedttzifhejprdch.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmY2h4ZWR0dHppZmhlanByZGNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5MTE4MzIsImV4cCI6MjA4NjQ4NzgzMn0.wXA9DqeSRMMtcLlMCiGvXOml0CAd2Vg5DEEQbiGRS-Y";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function createNote(data) {
+            const { data: note, error } = await supabaseClient
+                .from('love_notes')
+                .insert([{ note_data: data }])
+                .select()
+                .single();
+
+            if (error) {
+                console.error("Supabase Error:", error);
+                return null;
+            }
+            return note.id;
+        }
+
+        async function loadNote(id) {
+            const { data: note, error } = await supabaseClient
+                .from('love_notes')
+                .select('note_data')
+                .eq('id', id)
+                .single();
+
+            if (error || !note) {
+                console.error("Load Error:", error);
+                return null;
+            }
+            return note.note_data;
+        }
+
+        window.onload = async () => {
             const params = new URLSearchParams(window.location.search);
 
-            // 1. Try to decrypt 'data' param first
-            if (params.has('data')) {
+            // 0. Check for Supabase ID (New Standard)
+            if (params.has('id')) {
+                const noteData = await loadNote(params.get('id'));
+                if (noteData) {
+                    config = { ...config, ...noteData };
+                    startExperience();
+                }
+            }
+            // 1. Try to decrypt 'data' param (Legacy)
+            else if (params.has('data')) {
                 const decrypted = decryptData(params.get('data'));
                 if (decrypted) {
                     config = { ...config, ...decrypted };
@@ -575,16 +619,7 @@
                 startExperience();
             }
 
-            // ADMIN ACCESS: Obfuscated Check
-            // We hash the input and compare it to the known hash of the secret code.
-            const adminInput = params.get('admin');
-            // Hash of "richard"
-            const secretHash = "61bffea9215f65164ad18b45aff1436c0c165d0d5dd2087ef61b4232ba6d2c1a";
 
-            if (adminInput && CryptoJS.SHA256(adminInput).toString() === secretHash) {
-                isAdmin = true;
-                document.body.classList.add('admin-mode');
-            }
             setInterval(createPetal, 450);
 
             // Interactive Love Trail
@@ -654,10 +689,7 @@
             if (config.tier === 'heavy') document.body.classList.add('premium-mode');
             if (config.tier === 'sweet') document.body.classList.add('sweet-mode');
 
-            if (isAdmin) {
-                btn.innerText = `Generate Admin Link (${config.tier})`;
-                return;
-            }
+
 
             if (amt === 0) {
                 btn.innerText = "Generate Free Link";
@@ -681,10 +713,7 @@
             const name = document.getElementById('target-name').value;
             if (!name) { alert("Enter a name first!"); return; }
 
-            if (isAdmin) {
-                generateLink();
-                return;
-            }
+
 
             if (config.amount === 0) {
                 generateLink();
@@ -719,38 +748,84 @@
             handler.openIframe();
         }
 
-        function generateLink() {
+        async function generateLink() {
+            const btn = document.getElementById('action-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "Generating Link...";
+            btn.disabled = true;
+
             // Create data object
             const data = {
                 name: document.getElementById('target-name').value,
                 sender: document.getElementById('sender-name').value,
                 senderPhone: document.getElementById('sender-phone').value,
+                senderEmail: document.getElementById('sender-email').value,
                 type: config.type,
                 tier: config.tier
             };
 
-            // Encrypt it
-            const encryptedParams = encryptData(data);
+            // 1. Try Supabase First
+            const id = await createNote(data);
+            let url = "";
 
-            // Base URL Strategy:
-            // 1. If we are on ANY variant of Netlify (e.g. deploy preview or production), use THAT url.
-            // 2. If we are on localhost or file://, force the LIVE production URL.
+            // Base URL Logic
             let baseUrl = "https://valentilove.netlify.app";
-
-            if (window.location.hostname.includes("netlify.app")) {
+            if (window.location.hostname.includes("netlify.app") || window.location.hostname.includes("localhost")) {
                 baseUrl = window.location.origin + window.location.pathname;
             }
 
-            const url = `${baseUrl}?data=${encodeURIComponent(encryptedParams)}`;
+            if (id) {
+                // Short Link Success
+                url = `${baseUrl}?id=${id}`;
+            } else {
+                // Fallback to Encryption if DB fails
+                console.warn("Falling back to encrypted URL");
+                const encryptedParams = encryptData(data);
+                url = `${baseUrl}?data=${encodeURIComponent(encryptedParams)}`;
+            }
 
+            // SHOW RESULT UI
+            const input = document.getElementById('share-link-input');
+            const resultContainer = document.getElementById('result-container');
+            const copyBtn = document.getElementById('copy-link-btn');
+
+            input.value = url;
+            resultContainer.classList.remove('hidden');
+            btn.classList.add('hidden'); // Hide "Generate" button
+
+            // Manual Copy Logic
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(url).then(() => {
+                    const status = document.getElementById('copy-status');
+                    status.innerText = "Link Copied! Send it now.";
+                    status.style.opacity = 1;
+                    copyBtn.innerText = "Copied! ✅";
+                    setTimeout(() => {
+                        copyBtn.innerText = "Copy Link 📋";
+                        status.style.opacity = 0;
+                    }, 2000);
+                }).catch(err => {
+                    console.error("Clipboard failed", err);
+                    input.select();
+                    document.execCommand('copy'); // Fallback
+                    alert("Copied to clipboard!");
+                });
+            };
+
+            // Try Auto-Copy (Best Effort)
             navigator.clipboard.writeText(url).then(() => {
                 const status = document.getElementById('copy-status');
-                status.innerText = isAdmin ? "Admin Link Copied!" : "Link Copied! Send it now.";
+                status.innerText = "Link Copied! Send it now.";
                 status.style.opacity = 1;
+                copyBtn.innerText = "Copied! ✅";
             }).catch(err => {
-                console.error("Clipboard failed", err);
-                prompt("Copy this link:", url);
+                console.warn("Auto-copy blocked (expected)", err);
+                // No alert needed, user sees the button
             });
+
+            // Reset Generate Button
+            btn.innerText = originalText;
+            btn.disabled = false;
         }
 
 
