@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500;700&display=swap"
@@ -296,6 +297,29 @@
             }
         }
     </style>
+
+    <style>
+        /* Interactive Heart Trail */
+        .trail-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1.2rem;
+            animation: floatFade 1s linear forwards;
+        }
+
+        @keyframes floatFade {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -150%) scale(0.5);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -577,6 +601,29 @@
                 document.body.classList.add('admin-mode');
             }
             setInterval(createPetal, 450);
+
+            // Interactive Love Trail
+            let lastTrailTime = 0;
+            const handleTrail = (e) => {
+                const now = Date.now();
+                if (now - lastTrailTime < 50) return; // Throttle to 50ms
+                lastTrailTime = now;
+
+                const x = e.touches ? e.touches[0].clientX : e.clientX;
+                const y = e.touches ? e.touches[0].clientY : e.clientY;
+
+                const heart = document.createElement('div');
+                heart.className = 'trail-heart';
+                heart.innerText = ['❤️', '💖', '✨', '🌸'][Math.floor(Math.random() * 4)];
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 1000);
+            };
+
+            document.addEventListener('mousemove', handleTrail);
+            document.addEventListener('touchmove', handleTrail, { passive: true });
         };
 
         // --- ENCRYPTION HELPERS ---
@@ -827,6 +874,17 @@
                 p.style.background = 'transparent'; // Remove background color
                 overlay.appendChild(p);
             }
+
+            // Confetti Explosion
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#FF69B4', '#FF1493', '#D4AF37'], // Pink, Deep Pink, Gold
+                shapes: ['circle', 'square'],
+                scalar: 1.2
+            });
+
             anime({
                 targets: '.overlay-petal', scale: [0, 1.2], opacity: [0, 1], duration: 800, delay: anime.stagger(15, { grid: [10, 10], from: 'center' }),
                 complete: () => {
