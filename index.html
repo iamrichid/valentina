@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,500;1,600&family=Montserrat:wght@300;400;500;700&display=swap"
@@ -345,6 +346,7 @@
         <!-- WhatsApp Input (Always Visible) -->
         <div id="whatsapp-inputs" class="w-full flex flex-col gap-2">
             <input type="tel" id="sender-phone" class="setup-input" placeholder="Your WhatsApp (For Reply)">
+            <input type="email" id="sender-email" class="setup-input" placeholder="Your Email (For Receipt)">
         </div>
 
 
@@ -434,35 +436,7 @@
         </div>
     </div>
 
-    <!-- MoMo Modal -->
-    <div id="momo-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl animate-[fadeIn_0.3s_ease-out]">
-            <h3 class="text-2xl font-elegant italic font-bold mb-6 text-gray-800">Pay with MoMo</h3>
-
-            <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left border border-gray-100">
-                <p class="text-[10px] uppercase text-gray-400 font-bold tracking-widest mb-1">Send To</p>
-                <p class="font-bold text-lg text-gray-800">059 279 7074</p>
-                <p class="text-xs text-gray-500 mb-4">Name: Richard</p>
-
-                <p class="text-[10px] uppercase text-gray-400 font-bold tracking-widest mb-1">Amount</p>
-                <p class="font-bold text-lg text-rose-500" id="modal-amount">₵0</p>
-            </div>
-
-            <p class="text-xs text-gray-500 mb-6 px-4">
-                After sending, click below to confirm via WhatsApp. I will send your link immediately.
-            </p>
-
-            <button onclick="sendToWhatsApp()"
-                class="w-full py-4 bg-[#25D366] text-white rounded-full text-[11px] font-bold uppercase tracking-[0.2em] shadow-lg mb-3">
-                Confirm on WhatsApp
-            </button>
-
-            <button onclick="document.getElementById('momo-modal').classList.add('hidden')"
-                class="text-[10px] text-gray-400 uppercase tracking-widest hover:text-gray-600">
-                Cancel
-            </button>
-        </div>
-    </div>
+    <!-- Paystack Modal replaced by inline script -->
 
     <script>
         const themes = {
@@ -566,7 +540,7 @@
                 music: "https://www.bensound.com/bensound-music/bensound-epic.mp3"
             }
         };
-        let config = { name: "", sender: "", senderPhone: "", type: "lover", tier: "free", amount: 0 };
+        let config = { name: "", sender: "", senderPhone: "", senderEmail: "", type: "lover", tier: "free", amount: 0 };
         let isAdmin = false;
 
         const SECRET_KEY = "OdoFlow_Val_2026_Secret"; // Simple obfuscation key
@@ -677,13 +651,13 @@
                 btn.innerText = "Generate Free Link";
                 desc.innerText = "Standard romantic notes.";
             } else if (amt === 2) {
-                btn.innerText = `Pay ₵${amt} with MoMo`;
+                btn.innerText = `Pay ₵${amt}`;
                 desc.innerText = "Sweeter messages. Deeper feelings.";
             } else if (amt === 5) {
-                btn.innerText = `Pay ₵${amt} with MoMo`;
+                btn.innerText = `Pay ₵${amt}`;
                 desc.innerText = "💖 PINK THEME + Floating Hearts + Very Romantic.";
             } else if (amt === 10) {
-                btn.innerText = `Pay ₵${amt} with MoMo`;
+                btn.innerText = `Pay ₵${amt}`;
                 desc.innerText = "👑 GOLD THEME + Your Name Signed + VIP Emojis + The Deepest Love Letters.";
             }
         }
@@ -703,33 +677,34 @@
             if (config.amount === 0) {
                 generateLink();
             } else {
-                openMoMoModal();
+                payWithPaystack();
             }
         };
 
-        function openMoMoModal() {
-            document.getElementById('modal-amount').innerText = `₵${config.amount}`;
-            document.getElementById('momo-modal').classList.remove('hidden');
-        }
-
-        function sendToWhatsApp() {
-            // Update config with current inputs
-            config.name = document.getElementById('target-name').value;
-            config.sender = document.getElementById('sender-name').value;
-
-            if (!config.name) { alert("Please enter a name first!"); return; }
-
-            const myNumber = "233592797074"; // Your number
-            let text = `Hi, I just sent ₵${config.amount} for a '${config.type}' note (${config.tier}) for ${config.name}.`;
-
-            if (config.sender) {
-                text += ` From: ${config.sender}.`;
+        function payWithPaystack() {
+            const email = document.getElementById('sender-email').value;
+            if (!email) {
+                alert("Please enter your email for payment receipt.");
+                return;
             }
+            config.senderEmail = email;
 
-            text += ` Please activate my link.`;
-
-            const url = `https://wa.me/${myNumber}?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
+            const handler = PaystackPop.setup({
+                key: 'pk_live_ecce9880147eb02a817c34a44bfe77b31dccb1d5', // Replace with your public key
+                email: email,
+                amount: config.amount * 100, // Amount in kobo
+                currency: 'GHS',
+                ref: '' + Math.floor((Math.random() * 1000000000) + 1), // Generate a random reference number
+                callback: function (response) {
+                    // Payment successful
+                    // alert('Payment complete! Reference: ' + response.reference);
+                    generateLink(); // Automatically generate link
+                },
+                onClose: function () {
+                    alert('Transaction was not completed, window closed.');
+                }
+            });
+            handler.openIframe();
         }
 
         function generateLink() {
