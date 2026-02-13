@@ -185,13 +185,66 @@
 
 
 
-        /* PREMIUM GOLD THEME */
+        /* PREMIUM GOLD THEME (HEAVY) */
         .premium-mode {
             --rose-primary: #D4AF37;
             /* Gold */
             --rose-soft: #FFFBF0;
             /* Creamy Gold */
             background: linear-gradient(135deg, #FFFBF0 0%, #FFF5D6 100%);
+        }
+
+        /* SPARK THEME (BASIC) */
+        .spark-mode {
+            --rose-primary: #FF4500;
+            /* Orange Red */
+            --rose-soft: #FFF0E5;
+            /* Peach Mist */
+            background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            /* Subtle clean start */
+            background: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+            /* Placeholder, let's do a warm one */
+            background: linear-gradient(120deg, #fff1eb 0%, #ace0f9 100%);
+            /* No */
+            background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+            /* Warm Peach */
+        }
+
+        .spark-mode #intro-title {
+            animation: heartbeat 1.5s ease-in-out infinite both;
+            color: #FF4500;
+        }
+
+        .spark-mode .overlay-petal {
+            background: #FF4500 !important;
+        }
+
+        @keyframes heartbeat {
+            from {
+                transform: scale(1);
+                transform-origin: center center;
+                animation-timing-function: ease-out;
+            }
+
+            10% {
+                transform: scale(0.91);
+                animation-timing-function: ease-in;
+            }
+
+            17% {
+                transform: scale(0.98);
+                animation-timing-function: ease-out;
+            }
+
+            33% {
+                transform: scale(0.87);
+                animation-timing-function: ease-in;
+            }
+
+            45% {
+                transform: scale(1);
+                animation-timing-function: ease-out;
+            }
         }
 
         .premium-mode .text-rose-500,
@@ -288,6 +341,25 @@
             }
         }
 
+        /* Slide-in Animation for Paid Inputs */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+                max-height: 0;
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 200px;
+            }
+        }
+
+        .slide-in {
+            animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
         /* Typewriter Cursor */
         .cursor::after {
             content: '|';
@@ -337,24 +409,23 @@
         class="z-20 w-full h-full sm:h-auto sm:max-w-sm px-6 flex flex-col gap-4 text-center bg-white py-6 sm:rounded-[2rem] shadow-sm overflow-y-auto fade-in-up pb-24">
         <div class="flex flex-col items-center gap-2">
             <img src="logo.png" alt="OdoFlow Logo" class="w-32 h-auto drop-shadow-md">
+            <p class="text-xs text-gray-400 leading-relaxed max-w-[260px]">Send a personalised Valentine's message
+                to someone special. Pick a vibe, choose your tier, and share the love 💕</p>
         </div>
 
-        <input type="text" id="target-name" class="setup-input" placeholder="Their Name">
-
-        <!-- Sender Inputs (Always Visible) -->
-        <div id="sender-inputs" class="w-full flex flex-col gap-2">
-            <input type="text" id="sender-name" class="setup-input" placeholder="Your Name">
-        </div>
-
-        <!-- WhatsApp Input (Always Visible) -->
-        <div id="whatsapp-inputs" class="w-full flex flex-col gap-2">
-            <input type="tel" id="sender-phone" class="setup-input" placeholder="Your WhatsApp (For Reply)">
-            <input type="email" id="sender-email" class="setup-input" placeholder="Your Email (For Receipt)">
+        <!-- Gender Selector -->
+        <div class="flex flex-col gap-2 text-left">
+            <p class="text-[11px] uppercase tracking-widest text-gray-400 font-bold ml-2">Sending To</p>
+            <div class="flex justify-center gap-2">
+                <button onclick="setGender('her')" id="gen-her" class="btn-choice active">Her 👧</button>
+                <button onclick="setGender('him')" id="gen-him" class="btn-choice">Him 👦</button>
+                <button onclick="setGender('them')" id="gen-them" class="btn-choice">Them 🧑</button>
+            </div>
         </div>
 
 
         <div class="flex flex-col gap-2 text-left">
-            <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold ml-2">Relationship</p>
+            <p class="text-[11px] uppercase tracking-widest text-gray-400 font-bold ml-2">Relationship</p>
             <div class="flex flex-wrap justify-center gap-2">
                 <button onclick="setRel('lover')" id="rel-lover" class="btn-choice active">Lover</button>
                 <button onclick="setRel('crush')" id="rel-crush" class="btn-choice">Crush</button>
@@ -369,28 +440,69 @@
         </div>
 
         <div class="flex flex-col gap-2 text-left">
-            <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold ml-2">Tier</p>
+            <p class="text-[11px] uppercase tracking-widest text-gray-400 font-bold ml-2">Tier</p>
             <div class="grid grid-cols-4 gap-2">
                 <button onclick="setPrice(0)" id="p-0" class="price-btn active"><span
-                        class="block text-xs font-bold">₵0</span><span class="text-[7px] uppercase">Free</span></button>
+                        class="block text-sm font-bold">₵0</span><span class="text-[9px] uppercase">Free</span></button>
                 <button onclick="setPrice(2)" id="p-2" class="price-btn"><span
-                        class="block text-xs font-bold">₵2</span><span
-                        class="text-[7px] uppercase">Basic</span></button>
+                        class="block text-sm font-bold">₵2</span><span
+                        class="text-[9px] uppercase">Basic</span></button>
                 <button onclick="setPrice(5)" id="p-5" class="price-btn"><span
-                        class="block text-xs font-bold">₵5</span><span
-                        class="text-[7px] uppercase">Sweet</span></button>
+                        class="block text-sm font-bold">₵5</span><span
+                        class="text-[9px] uppercase">Sweet</span></button>
                 <button onclick="setPrice(10)" id="p-10" class="price-btn"><span
-                        class="block text-xs font-bold">₵10</span><span
-                        class="text-[7px] uppercase">Heavy</span></button>
+                        class="block text-sm font-bold">₵10</span><span
+                        class="text-[9px] uppercase">Heavy</span></button>
             </div>
         </div>
-        <p id="tier-description" class="text-[10px] text-gray-500 italic px-4 mt-2 h-8 leading-tight">
+        <p id="tier-description" class="text-xs text-gray-500 italic px-4 mt-2 h-8 leading-tight">
             Standard romantic notes.
         </p>
+
+        <input type="text" id="target-name" class="setup-input" placeholder="Their Name">
+
+        <!-- Sender Inputs (Paid Only) -->
+        <div id="sender-inputs" class="w-full flex flex-col gap-2 hidden">
+            <input type="text" id="sender-name" class="setup-input" placeholder="Your Name">
+        </div>
+
+        <!-- WhatsApp Input (Paid Only) -->
+        <div id="whatsapp-inputs" class="w-full flex flex-col gap-2 hidden">
+            <input type="tel" id="sender-phone" class="setup-input" placeholder="Your WhatsApp (For Reply)">
+            <input type="email" id="sender-email" class="setup-input" placeholder="Your Email (For Receipt)">
+        </div>
+
+        <!-- Custom Message (Toggle) -->
+        <div id="custom-message-container" class="w-full flex flex-col gap-2 hidden">
+            <div class="flex justify-between items-center px-1">
+                <div class="flex items-center gap-2">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="custom-toggle" class="sr-only peer"
+                            onchange="toggleCustomMessage(this)">
+                        <div
+                            class="w-8 h-4 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-rose-400">
+                        </div>
+                    </label>
+                    <span class="text-xs uppercase font-bold text-gray-400 tracking-widest">Custom Message</span>
+                </div>
+                <span id="custom-chars" class="text-[11px] text-gray-400 font-mono hidden">0/60</span>
+            </div>
+            <textarea id="custom-message-input" rows="3" class="setup-input resize-none hidden opacity-50" disabled
+                placeholder="Write your own message..." oninput="updateCharCount(this)"></textarea>
+        </div>
+
+
         <div class="mt-auto w-full pt-6">
-            <button id="action-btn"
-                class="w-full py-5 bg-black text-white rounded-full text-[10px] tracking-[0.4em] uppercase font-bold shadow-xl transition transform active:scale-95">Generate
-                Free Link</button>
+            <div class="flex gap-3">
+                <button id="preview-btn" onclick="previewMessage()"
+                    class="flex-1 py-4 bg-rose-100 text-rose-600 rounded-full text-xs tracking-[0.2em] uppercase font-bold shadow-md transition transform active:scale-95 border border-rose-200">
+                    Preview 👀
+                </button>
+                <button id="action-btn"
+                    class="flex-[2] py-4 bg-black text-white rounded-full text-xs tracking-[0.2em] uppercase font-bold shadow-xl transition transform active:scale-95">
+                    Generate/Pay
+                </button>
+            </div>
 
             <div id="result-container" class="hidden flex flex-col gap-4 w-full mt-4 items-center">
                 <input type="text" id="share-link-input" readonly
@@ -416,6 +528,12 @@
     </div>
 
     <div id="experience-wrapper" class="hidden relative z-10 w-full px-8 text-center">
+        <!-- Back to Edit Button (Preview Only) -->
+        <button id="back-to-edit-btn" onclick="endPreview()"
+            class="hidden fixed top-6 right-6 z-50 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-rose-200 shadow-sm text-[10px] uppercase tracking-widest text-rose-500 font-bold hover:bg-white transition">
+            ✕ Edit
+        </button>
+
         <div id="intro-view" class="flex flex-col items-center gap-12">
             <h1 class="text-5xl font-elegant italic font-light text-gray-800" id="intro-title"></h1>
             <p id="intro-subtitle" class="text-sm uppercase tracking-[0.2em] text-gray-400 mt-4 opacity-0"></p>
@@ -427,7 +545,7 @@
         <div id="question-view" class="hidden flex flex-col items-center gap-12 opacity-0">
             <h1 id="question-text"
                 class="lyrics-text font-elegant italic font-medium min-h-[180px] flex items-center justify-center"></h1>
-            <div id="buttons-container" class="hidden flex gap-10 w-full justify-center items-center">
+            <div id="buttons-container" class="flex gap-10 w-full justify-center items-center" style="display:none">
                 <button id="yes-btn"
                     class="text-[16px] tracking-[0.2em] uppercase text-rose-500 font-black">Yes</button>
                 <button id="no-btn" class="text-[14px] tracking-[0.2em] uppercase text-gray-300">No</button>
@@ -455,106 +573,285 @@
     <script>
         const themes = {
             lover: {
-                tiers: {
-                    free: ["“Obi doba, m'ani agye wo ho.”", "Chale, your love sweet pass Ghana Jollof.", "You are my Black Star—the brightest light.", "I want to build a world with only you.", "Will you be my Valentine?"],
-                    basic: ["Every moment with you is a blessing.", "You make my heart beat faster.", "I can't imagine life without you.", "You are my favorite notification.", "Will you be my Valentine?"],
-                    sweet: ["You are the sugar in my koko.", "My love for you is bigger than the ocean.", "I promise to always be by your side.", "You are my everything, my Odo.", "Will you be my Valentine forever?"],
-                    heavy: ["My soul recognized you before my eyes did.", "I am yours, in this life and the next.", "You are the answered prayer I waited for.", "I love you more than words can carry.", "Will you be my eternal Valentine?"]
-                },
-                success: ["You are my blessing.", "You are my home.", "Forever yours.", "I love you truly."],
                 emojis: ['🌸', '🌹', '❤️', '💕'],
-                music: "https://www.bensound.com/bensound-music/bensound-love.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-love.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["“Obi doba, m'ani agye wo ho.”", "Chale, your love sweet pass Ghana Jollof.", "You are my Black Star—the brightest light.", "I want to build a world with only you.", "Will you be my Valentine?"],
+                            basic: ["Every moment with you is a blessing.", "You make my heart beat faster.", "I can't imagine life without you.", "You are my favorite notification.", "Will you be my Valentine?"],
+                            sweet: ["You are the sugar in my koko.", "My love for you is bigger than the ocean.", "I promise to always be by your side.", "You are my everything, my Odo.", "Will you be my Valentine forever?"],
+                            heavy: ["My soul recognized you before my eyes did.", "I am yours, in this life and the next.", "You are the answered prayer I waited for.", "I love you more than words can carry.", "Will you be my eternal Valentine?"]
+                        },
+                        success: ["You are my blessing.", "You are my Queen.", "Forever yours.", "I love you truly."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["You are my calm in the chaos.", "Chale, you be my gee for life.", "You make me feel safe.", "I want to build a vibe with you.", "Will you be my Valentine?"],
+                            basic: ["Every moment with you is a vibe.", "You make my heart beat faster.", "I respect and adore you.", "You're the King of my heart.", "Will you be my Valentine?"],
+                            sweet: ["You are my strength and my peace.", "My love for you is deep.", "I promise to always back you up.", "You are my everything, my Odo.", "Will you be my Valentine forever?"],
+                            heavy: ["My soul recognized you instantly.", "I am yours, fully.", "You are the man I prayed for.", "I love you more than words can carry.", "Will you be my King?"]
+                        },
+                        success: ["You are my King.", "My Protector.", "Forever yours.", "I love you truly."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["You are my person.", "Chale, our vibe is unmatched.", "You make me smile.", "I want to be with you.", "Will you be my Valentine?"],
+                            basic: ["Every moment with you is a blessing.", "You are my heart.", "Life means more with you.", "My favorite human.", "Will you be my Valentine?"],
+                            sweet: ["You are the sweetness in my life.", "My love for you is big.", "Always by your side.", "You are my Odo.", "Will you be my Valentine forever?"],
+                            heavy: ["My soul recognized you.", "I am yours.", "You are my answered prayer.", "I love you deeply.", "Will you be my Valentine?"]
+                        },
+                        success: ["You are my blessing.", "My Love.", "Forever yours.", "I love you."]
+                    }
+                }
             },
             crush: {
-                tiers: {
-                    free: ["I’ve been shy to say this...", "Every time I see you, my heart skip beat.", "You be the only vibe I’m feeling lately.", "Could we be more than friends?", "Will you be my Valentine?"],
-                    basic: ["I smile at my phone when it's you.", "I think about you more than you know.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
-                    sweet: ["You are the crush that never faded.", "I want to be the reason you smile.", "Let's stop pretending we're just friends.", "You have my heart already.", "Can I take you out?"],
-                    heavy: ["I am falling for you, hard.", "You remain the most beautiful mystery.", "I want to know every part of you.", "My heart chooses you, every time.", "Be mine, please?"]
-                },
-                success: ["I'm glad I said it.", "You make me smile.", "Let's see where this goes.", "You're special."],
                 emojis: ['😍', '👀', '✨', '💌'],
-                music: "https://www.bensound.com/bensound-music/bensound-love.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-love.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["I’ve been shy to say this...", "Every time I see you, my heart speeds up.", "You are the only vibe I’m feeling.", "Could we be more than friends?", "Will you be my Valentine?"],
+                            basic: ["I smile at my phone when it's you.", "You are effortlessly beautiful.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
+                            sweet: ["You are the crush that never faded.", "I want to be the reason you smile.", "Let's stop pretending we're just friends.", "You have my heart already.", "Can I take you out?"],
+                            heavy: ["I am falling for you, hard.", "You remain the most beautiful mystery.", "I want to know every part of you.", "My heart chooses you, every time.", "Be mine, please?"]
+                        },
+                        success: ["I'm glad I said it.", "You're beautiful.", "Let's see where this goes.", "You're special."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["I’ve been eyeing you lowkey...", "My heart does a thing when you walk inside.", "You be the only vibe I’m feeling.", "Could we be more than friends?", "Will you be my Valentine?"],
+                            basic: ["I smile at my phone when it's you.", "You are handsome as hell.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
+                            sweet: ["You are the crush that stuck.", "I want to be the reason you smile.", "No more just friends.", "You have my heart already.", "Can we link up?"]
+                        },
+                        success: ["I'm glad I said it.", "You're valid.", "Let's see where this goes.", "You're special."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["I’ve been shy to say this...", "Every time I see you, it's a mood.", "You be the only vibe I’m feeling.", "Could we be more than friends?", "Will you be my Valentine?"],
+                            basic: ["I smile at my phone when it's you.", "You are stunning.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
+                            sweet: ["You are the crush that never faded.", "I want to be the reason you smile.", "Let's stop pretending we're just friends.", "You have my heart already.", "Can I take you out?"]
+                        },
+                        success: ["I'm glad I said it.", "You make me smile.", "Let's see where this goes.", "You're special."]
+                    }
+                }
             },
             parent: {
-                tiers: {
-                    free: ["Everything I am is because of you.", "God really blessed me with the best.", "Thank you for the sacrifices I didn't see.", "Your prayers keep me going every day.", "Can I tell you I love you today?"],
-                    basic: ["You taught me what love really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you!"],
-                    sweet: ["Home is wherever you are.", "Your wisdom guides my every step.", "I am so proud to be your child.", "May God bless you abundantly.", "Love you always."],
-                    heavy: ["You gave me life and taught me to live.", "I owe you everything good in me.", "Your love is the purest I know.", "I will always take care of you.", "I love you deeply."]
-                },
-                success: ["You are my hero.", "God bless you always.", "The real GOAT.", "I appreciate you."],
                 emojis: ['👑', '🛡️', '💐', '🏡'],
-                music: "https://www.bensound.com/bensound-music/bensound-love.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-love.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["Everything I am is because of you.", "God really blessed me with the best Mom.", "Thank you for the sacrifices.", "Your prayers keep me going.", "Can I tell you I love you today?"],
+                            basic: ["You taught me what love really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you, Mom!"],
+                            sweet: ["Home is wherever you are.", "Your wisdom guides my every step.", "I am so proud to be your child.", "May God bless you abundantly.", "Love you always."],
+                            heavy: ["You gave me life and taught me to live.", "I owe you everything good in me.", "Your love is purest.", "I will always take care of you.", "I love you deeply, Ma."]
+                        },
+                        success: ["You are my Queen.", "God bless you.", "Best Mom ever.", "I appreciate you."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["Everything I am is because of you.", "God really blessed me with the best Dad.", "Thank you for the sacrifices.", "Your guidance keeps me going.", "Can I tell you I love you today?"],
+                            basic: ["You taught me what strength really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you, Dad!"],
+                            sweet: ["You built this home for us.", "Your wisdom guides my steps.", "I am so proud to be your child.", "May God bless you abundantly.", "Love you always."],
+                            heavy: ["You gave me life and taught me to be strong.", "I owe you everything good in me.", "Your love is solid.", "I will always take care of you.", "I love you deeply, Pa."]
+                        },
+                        success: ["You are my Hero.", "God bless you.", "Best Dad ever.", "I appreciate you."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["Everything I am is because of you.", "God blessed me with you.", "Thank you for the sacrifices.", "Your prayers keep me going.", "Can I tell you I love you today?"],
+                            basic: ["You taught me what love really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you!"],
+                            sweet: ["Home is wherever you are.", "Your wisdom guides my steps.", "I am so proud to be yours.", "May God bless you abundantly.", "Love you always."]
+                        },
+                        success: ["You are my hero.", "God bless you.", "The real GOAT.", "I appreciate you."]
+                    }
+                }
             },
             child: {
-                tiers: {
-                    free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little blessing.", "Love you, kiddo!"],
-                    basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you son/daughter!"],
-                    sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."],
-                    heavy: ["My love for you has no conditions.", "I will move mountains for you.", "You are my heart walking outside my body.", "Forever my baby.", "I love you deep."]
-                },
-                success: ["My pride and joy.", "Shine on.", "Love you always.", "You're the best."],
                 emojis: ['🌞', '🧸', '🎈', '🐣'],
-                music: "https://www.bensound.com/bensound-music/bensound-ukulele.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-ukulele.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little Princess.", "Love you, baby girl!"],
+                            basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you daughter!"],
+                            sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."],
+                            heavy: ["My love for you has no conditions.", "I will move mountains for you.", "You are my heart walking outside.", "Forever my baby girl.", "I love you deep."]
+                        },
+                        success: ["My Princess.", "Shine on.", "Love you always.", "You're the best."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little King.", "Love you, son!"],
+                            basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you son!"],
+                            sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."],
+                            heavy: ["My love for you has no conditions.", "I will move mountains for you.", "You are my heart walking outside.", "Forever my boy.", "I love you deep."]
+                        },
+                        success: ["My Champion.", "Shine on.", "Love you always.", "You're the best."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little blessing.", "Love you, kiddo!"],
+                            basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you!"],
+                            sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."]
+                        },
+                        success: ["My pride and joy.", "Shine on.", "Love you always.", "You're the best."]
+                    }
+                }
             },
             sibling: {
-                tiers: {
-                    free: ["You’re annoying, but you're my person.", "I'd still share my last plantain with you.", "The best partner-in-crime since day one.", "Thanks for not telling Mom all my secrets.", "You know I love you, right?"],
-                    basic: ["We fight, we make up, we ride.", "Life is better with you in it.", "You're my first best friend.", "Thanks for having my back.", "Love you, nuisance."],
-                    sweet: ["You know me better than anyone.", "I'm lucky to grow up with you.", "My favorite person to disturb.", "Always here for you.", "Love you!"],
-                    heavy: ["Blood makes us relatives, love makes us friends.", "I'd do anything for you.", "You are my keeper.", "Forever my partner in crime.", "Love you deep."]
-                },
-                success: ["Blood is thicker than water.", "Siblings by birth, friends by choice.", "Always my favorite person to annoy.", "Got your back forever."],
                 emojis: ['🎮', '🍕', '🤪', '🤛'],
-                music: "https://www.bensound.com/bensound-music/bensound-funny.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-funny.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["You’re annoying, but you're my person.", "Still stealing my clothes?", "Best sister ever (mostly).", "Thanks for keeping my secrets.", "Love you, sis!"],
+                            basic: ["We fight, we make up, we ride.", "Life is better with you.", "You're my first best friend.", "Thanks for having my back.", "Love you, nuisance."],
+                            sweet: ["You know me better than anyone.", "Lucky to have a sister like you.", "My favorite person to disturb.", "Always here for you.", "Love you!"]
+                        },
+                        success: ["Sister sister.", "Siblings 4L.", "Love you.", "Got your back."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["You’re annoying, but you're my guy.", "Still chopping my food?", "Best brother ever.", "Thanks for not snitching.", "Love you, bro!"],
+                            basic: ["We fight, we make up, we ride.", "Life is better with you.", "You're my day one.", "Thanks for having my back.", "Love you, man."],
+                            sweet: ["You know me better than anyone.", "Lucky to have a brother like you.", "My favorite person to disturb.", "Always here for you.", "Love you!"]
+                        },
+                        success: ["Brotherhood.", "Day One.", "Love you.", "Got your back."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["You’re annoying, but you're my person.", "I'd still share my last plantain with you.", "The best partner-in-crime.", "Thanks for not snitching.", "Love you!"],
+                            basic: ["We fight, we make up, we ride.", "Life is better with you.", "You're my first best friend.", "Thanks for having my back.", "Love you, nuisance."],
+                            sweet: ["You know me better than anyone.", "Lucky to grow up with you.", "My favorite person to disturb.", "Always here for you.", "Love you!"]
+                        },
+                        success: ["Blood is thicker.", "Siblings 4L.", "Love you.", "Got your back."]
+                    }
+                }
             },
             friend: {
-                tiers: {
-                    free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "Thank you for being there.", "You make life much more fun.", "Will you be my Bestie forever?"],
-                    basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "Besties 4L?"],
-                    sweet: ["You are the family I chose.", "Life is boring without you.", "Thanks for being my listener.", "You're a rare gem.", "Love you friend!"],
-                    heavy: ["I don't know where I'd be without you.", "You saved me in ways you don't know.", "A true friend is a blessing.", "Forever grateful for you.", "Love you deep."]
-                },
-                success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."],
                 emojis: ['🥂', '🤝', '🌟', '👯'],
-                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "You make life fun, girl.", "Will you be my Galentine?", "Love you!"],
+                            basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "Besties 4L?"],
+                            sweet: ["You are the sister I chose.", "Life is boring without you.", "Thanks for being my listener.", "You're a rare gem.", "Love you friend!"]
+                        },
+                        success: ["Besties.", "Always got you.", "Cheers.", "You're a gem."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "You make life fun, bro.", "Happy Valentine's, man.", "Bless up!"],
+                            basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "My Gee for life."],
+                            sweet: ["You are the brother I chose.", "Life is boring without you.", "Thanks for being solid.", "You're a rare gem.", "Love you bro!"]
+                        },
+                        success: ["My Guy.", "Always got you.", "Cheers.", "Solid."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "Thank you for being there.", "You make life much more fun.", "Will you be my Bestie forever?"],
+                            basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "Besties 4L?"],
+                            sweet: ["You are the family I chose.", "Life is boring without you.", "Thanks for being my listener.", "You're a rare gem.", "Love you friend!"]
+                        },
+                        success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."]
+                    }
+                }
             },
             colleague: {
-                tiers: {
-                    free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Coffee on me soon?", "Best work buddy."],
-                    basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
-                    sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."],
-                    heavy: ["I genuinely admire your work ethic.", "You inspire me to do better.", "A true professional and a friend.", "Thanks for the mentorship.", "You're a legend."]
-                },
-                success: ["Work besties.", "See you at the office.", "Keep winning.", "You're appreciated."],
                 emojis: ['💼', '☕', '💻', '📈'],
-                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Coffee on me soon?", "Best work buddy."],
+                            basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
+                            sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."]
+                        },
+                        success: ["Work besties.", "See you at the office.", "Keep winning.", "You're appreciated."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Lunch on me soon?", "Best work buddy."],
+                            basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
+                            sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."]
+                        },
+                        success: ["Work pals.", "See you at the office.", "Keep winning.", "You're appreciated."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Coffee on me soon?", "Best work buddy."],
+                            basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
+                            sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."]
+                        },
+                        success: ["Work besties.", "See you at the office.", "Keep winning.", "You're appreciated."]
+                    }
+                }
             },
             boss: {
-                tiers: {
-                    free: ["Happy Valentine's Day, Boss!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
-                    basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
-                    sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."],
-                    heavy: ["I genuinely appreciate your mentorship.", "You've changed my career path.", "Thank you for your wisdom.", "A visionary leader.", "Respect always."]
-                },
-                success: ["Respect, Boss.", "Thank you.", "Great leadership.", "To more wins."],
                 emojis: ['👔', '🚀', '🎯', '🤝'],
-                music: "https://www.bensound.com/bensound-music/bensound-corporate.mp3"
+                music: "https://www.bensound.com/bensound-music/bensound-corporate.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["Happy Valentine's Day!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
+                            basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
+                            sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."]
+                        },
+                        success: ["Respect.", "Thank you, Ma'am.", "Great leadership.", "To more wins."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["Happy Valentine's Day, Boss!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
+                            basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
+                            sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."]
+                        },
+                        success: ["Respect, Boss.", "Thank you, Sir.", "Great leadership.", "To more wins."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["Happy Valentine's Day, Boss!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
+                            basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
+                            sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."]
+                        },
+                        success: ["Respect, Boss.", "Thank you.", "Great leadership.", "To more wins."]
+                    }
+                }
             },
             enemy: {
-                tiers: {
-                    free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "I'm the one God blessed. Agree?"],
-                    basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
-                    sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", " Peace."],
-                    heavy: ["I forgive you.", "Let's leave the hate behind.", "Life is too short.", "I wish you well.", "God bless."]
-                },
-                success: ["Victory is mine.", "Keep watching the glory.", "Psalm 23:5 always."],
-                emojis: ['🐍', '🤡', '🚩', '💣'],
-                music: "https://www.bensound.com/bensound-music/bensound-epic.mp3"
+                emojis: ['💀', '🗡️', '💔', '😐'],
+                music: "https://www.bensound.com/bensound-music/bensound-scifi.mp3",
+                messages: {
+                    her: {
+                        tiers: {
+                            free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "We are not friends.", "I'm the one God blessed. Agree?"],
+                            basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
+                            sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", "Peace out."]
+                        },
+                        success: ["Victory is mine.", "Keep watching.", "Nothing can stop me.", "Psalm 23:5 always."]
+                    },
+                    him: {
+                        tiers: {
+                            free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "We are not friends.", "I'm the one God blessed. Agree?"],
+                            basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
+                            sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", "Peace out."]
+                        },
+                        success: ["Victory is mine.", "Keep watching.", "Nothing can stop me.", "Psalm 23:5 always."]
+                    },
+                    them: {
+                        tiers: {
+                            free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "We are not friends.", "I'm the one God blessed. Agree?"],
+                            basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
+                            sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", "Peace."]
+                        },
+                        success: ["Victory is mine.", "Keep watching.", "Nothing can stop me.", "Psalm 23:5 always."]
+                    }
+                }
             }
         };
-        let config = { name: "", sender: "", senderPhone: "", senderEmail: "", type: "lover", tier: "free", amount: 0 };
+        let config = { name: "", sender: "", senderPhone: "", senderEmail: "", type: "lover", gender: "her", tier: "free", amount: 0, customMessage: "" };
 
 
         const SECRET_KEY = "OdoFlow_Val_2026_Secret"; // Simple obfuscation key
@@ -600,6 +897,8 @@
                 const noteData = await loadNote(params.get('id'));
                 if (noteData) {
                     config = { ...config, ...noteData };
+                    // Default to 'her' if gender missing in legacy data
+                    if (!config.gender) config.gender = 'her';
                     startExperience();
                 }
             }
@@ -615,6 +914,7 @@
             else if (params.has('name')) {
                 config.name = params.get('name');
                 config.type = params.get('type') || 'lover';
+                config.gender = params.get('gender') || 'her';
                 config.tier = params.get('tier') || 'free';
                 startExperience();
             }
@@ -644,6 +944,8 @@
 
             document.addEventListener('mousemove', handleTrail);
             document.addEventListener('touchmove', handleTrail, { passive: true });
+
+
         };
 
         // --- ENCRYPTION HELPERS ---
@@ -662,8 +964,18 @@
 
         function setRel(t) {
             config.type = t;
-            document.querySelectorAll('.btn-choice').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#setup-view .btn-choice').forEach(b => {
+                // Only targeting relationship buttons, but they share class. 
+                // Let's rely on ID structure to separate or just specific IDs
+                if (b.id.startsWith('rel-')) b.classList.remove('active');
+            });
             document.getElementById(`rel-${t}`).classList.add('active');
+        }
+
+        function setGender(g) {
+            config.gender = g;
+            ['her', 'him', 'them'].forEach(k => document.getElementById(`gen-${k}`).classList.remove('active'));
+            document.getElementById(`gen-${g}`).classList.add('active');
         }
 
         function setPrice(amt) {
@@ -678,25 +990,68 @@
             document.getElementById(`p-${amt}`).classList.add('active');
             const btn = document.getElementById('action-btn');
             const desc = document.getElementById('tier-description');
-            const inputs = document.getElementById('sender-inputs');
 
-            // Toggle Sender Name Visibility (Tier 5+) - REMOVED (Always Visible)
+            // Toggle Inputs (Sender & WhatsApp & Custom Message)
+            const senderDiv = document.getElementById('sender-inputs');
+            const waDiv = document.getElementById('whatsapp-inputs');
+            const customDiv = document.getElementById('custom-message-container');
+            const customInput = document.getElementById('custom-message-input');
+            const charCount = document.getElementById('custom-chars');
 
-            // Toggle WhatsApp Visibility (Tier 10+) - REMOVED (Always Visible)
+            if (amt === 0) {
+                senderDiv.classList.add('hidden');
+                senderDiv.classList.remove('slide-in');
+                waDiv.classList.add('hidden');
+                waDiv.classList.remove('slide-in');
+                customDiv.classList.add('hidden');
+                customDiv.classList.remove('slide-in');
+                // Reset toggle
+                const toggle = document.getElementById('custom-toggle');
+                toggle.checked = false;
+                customInput.classList.add('hidden');
+                customInput.disabled = true;
+                customInput.classList.add('opacity-50');
+                charCount.classList.add('hidden');
+            } else {
+                // Staggered slide-in animation
+                const paidInputs = [senderDiv, waDiv, customDiv];
+                paidInputs.forEach((el, i) => {
+                    el.classList.remove('hidden', 'slide-in');
+                    // Force reflow to restart animation
+                    void el.offsetWidth;
+                    el.style.animationDelay = `${i * 0.1}s`;
+                    el.classList.add('slide-in');
+                });
+
+                // Tiered Limits
+                let limit = 60;
+                let placeholder = "Write one short sentence...";
+
+                if (amt === 5) { // Sweet
+                    limit = 150;
+                    placeholder = "Write a sweet note (approx 3 sentences)...";
+                } else if (amt === 10) { // Heavy
+                    limit = 500;
+                    placeholder = "Pour your heart out (Long Letter)...";
+                }
+
+                customInput.maxLength = limit;
+                customInput.placeholder = placeholder;
+                charCount.innerText = `${customInput.value.length}/${limit}`;
+            }
 
             // INSTANT PREVIEW LOGIC
-            document.body.classList.remove('premium-mode', 'sweet-mode');
+            document.body.classList.remove('premium-mode', 'sweet-mode', 'spark-mode');
             if (config.tier === 'heavy') document.body.classList.add('premium-mode');
             if (config.tier === 'sweet') document.body.classList.add('sweet-mode');
-
-
+            if (config.tier === 'basic') document.body.classList.add('spark-mode');
 
             if (amt === 0) {
                 btn.innerText = "Generate Free Link";
                 desc.innerText = "Standard romantic notes.";
             } else if (amt === 2) {
                 btn.innerText = `Pay ₵${amt}`;
-                desc.innerText = "Sweeter messages. Deeper feelings.";
+                desc.innerText = "⚡ SPARK MODE + Warm Vibes + Heartbeat Effect.";
             } else if (amt === 5) {
                 btn.innerText = `Pay ₵${amt}`;
                 desc.innerText = "💖 PINK THEME + Floating Hearts + Very Romantic.";
@@ -712,8 +1067,6 @@
         document.getElementById('action-btn').onclick = () => {
             const name = document.getElementById('target-name').value;
             if (!name) { alert("Enter a name first!"); return; }
-
-
 
             if (config.amount === 0) {
                 generateLink();
@@ -755,13 +1108,33 @@
             btn.disabled = true;
 
             // Create data object
+            const customText = document.getElementById('custom-message-input').value.trim();
+            let customMessages = null;
+            if (customText && config.tier !== 'free') {
+                if (config.tier === 'basic') {
+                    customMessages = [customText];
+                } else {
+                    customMessages = customText.split(/([.!?]+[\s\n]+)/).filter(Boolean).reduce((acc, part, i, arr) => {
+                        if (i % 2 === 0) {
+                            let msg = part;
+                            if (arr[i + 1]) msg += arr[i + 1].trim();
+                            acc.push(msg.trim());
+                        }
+                        return acc;
+                    }, []).filter(m => m.length > 0);
+                    if (customMessages.length === 0) customMessages = [customText];
+                }
+            }
+
             const data = {
                 name: document.getElementById('target-name').value,
                 sender: document.getElementById('sender-name').value,
                 senderPhone: document.getElementById('sender-phone').value,
                 senderEmail: document.getElementById('sender-email').value,
                 type: config.type,
-                tier: config.tier
+                gender: config.gender,
+                tier: config.tier,
+                customMessages: customMessages
             };
 
             // 1. Try Supabase First
@@ -834,14 +1207,20 @@
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('experience-wrapper').classList.remove('hidden');
 
-            // Premium & Sweet Logic
+            // Premium & Sweet & Spark Logic
+            // Premium & Sweet & Spark Logic
             if (config.tier === 'heavy') {
                 document.body.classList.add('premium-mode');
                 document.getElementById('intro-title').classList.add('text-shimmer'); // Add shimmer
-                if (config.sender) themes[config.type].success.push(`Love, ${config.sender}`);
+                const genderData = themes[config.type].messages[config.gender] || themes[config.type].messages['her'];
+                if (config.sender && !genderData.success.includes(`Love, ${config.sender}`)) {
+                    genderData.success = [...genderData.success, `Love, ${config.sender}`];
+                }
             } else if (config.tier === 'sweet') {
                 document.body.classList.add('sweet-mode');
                 document.getElementById('intro-title').classList.add('text-pulse'); // Add pulse
+            } else if (config.tier === 'basic') {
+                document.body.classList.add('spark-mode');
             }
 
             typeWriter('intro-title', `A note for ${config.name}.`);
@@ -882,12 +1261,32 @@
         };
 
         function showNext() {
-            const list = themes[config.type].tiers[config.tier];
-            typeWriter('question-text', list[msgIndex], 50);
+            let message = "";
 
+            // Use pre-defined messages for other tiers
+            // Check for Custom Messages first
+            let list;
+            if (config.customMessages && config.customMessages.length > 0) {
+                list = config.customMessages;
+            } else {
+                // Fallback to 'her' if gender is missing (legacy safety)
+                const genderData = themes[config.type].messages[config.gender] || themes[config.type].messages['her'];
+                list = genderData.tiers[config.tier];
+            }
+
+            // Safety check if tier doesn't exist (e.g. heavy removed from some)
+            if (!list) {
+                console.error("Tier missing for this gender/type combination");
+                return;
+            }
+
+            message = list[msgIndex];
+            typeWriter('question-text', message, 50);
+
+            // Show buttons on last message for pre-defined tiers
             if (msgIndex === list.length - 1) {
                 document.getElementById('next-msg-btn').classList.add('hidden');
-                document.getElementById('buttons-container').classList.remove('hidden');
+                document.getElementById('buttons-container').style.display = 'flex';
             }
         }
 
@@ -960,7 +1359,8 @@
         };
 
         document.getElementById('heart-trigger').onclick = () => {
-            const list = themes[config.type].success;
+            const genderData = themes[config.type].messages[config.gender] || themes[config.type].messages['her'];
+            const list = genderData.success;
             const msgEl = document.getElementById('final-message');
             anime({ targets: '#heart-trigger', scale: [1, 1.3, 1], duration: 400 });
             for (let i = 0; i < 5; i++) createPetal(); // Increased count for effect
@@ -982,6 +1382,8 @@
                 emojis = ['✨', '🌟', '💛', '🏵️', '👑'];
             } else if (config.tier === 'sweet') {
                 emojis = ['❤️', '💖', '💝', '💕', '💓'];
+            } else if (config.tier === 'basic') {
+                emojis = ['🔥', '❤️', '✨', '⚡'];
             }
 
             petal.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
@@ -1036,7 +1438,123 @@
             }
         }
 
+
+        // --- PREVIEW LOGIC ---
+        function previewMessage() {
+            const name = document.getElementById('target-name').value;
+            if (!name) { alert("Enter a name first!"); return; }
+
+
+
+            config.name = name;
+            config.sender = document.getElementById('sender-name').value;
+            config.senderPhone = document.getElementById('sender-phone').value;
+            // Config gender is already set by setGender()
+
+            // Handle Custom Message
+            const customText = document.getElementById('custom-message-input').value.trim();
+            if (customText && config.tier !== 'free') {
+                if (config.tier === 'basic') {
+                    // Basic: Single string (one message)
+                    config.customMessages = [customText];
+                } else {
+                    // Sweet/Heavy: Split by newlines or periods for flow
+                    // Look for sentence endings (.!?) strictly followed by space or newline
+                    config.customMessages = customText.split(/([.!?]+[\s\n]+)/).filter(Boolean).reduce((acc, part, i, arr) => {
+                        if (i % 2 === 0) {
+                            // This is the sentence part
+                            let msg = part;
+                            // Check next part if it's the delimiter
+                            if (arr[i + 1]) msg += arr[i + 1].trim();
+                            acc.push(msg.trim());
+                        }
+                        return acc;
+                    }, []).filter(m => m.length > 0);
+
+                    // Fallback if split failed or single line
+                    if (config.customMessages.length === 0) config.customMessages = [customText];
+                }
+            } else {
+                config.customMessages = null;
+            }
+
+            // Reset States
+            msgIndex = 0;
+            flowIndex = 0;
+
+            // Show Back Button
+            document.getElementById('back-to-edit-btn').classList.remove('hidden');
+
+            // Hide buttons that shouldn't be in preview (like "Create Your Own")
+            // We can keep them or hide them, let's keep them for realism but maybe disable?
+            // Actually, let's just show the experience.
+
+            startExperience();
+        }
+
+        function endPreview() {
+            // Stop Music
+            const audio = document.getElementById('bg-music');
+            audio.pause();
+            audio.currentTime = 0;
+
+            // Reset UI
+            document.getElementById('experience-wrapper').classList.add('hidden');
+            document.getElementById('setup-view').classList.remove('hidden');
+
+            // Reset Experience Views
+            document.getElementById('intro-view').classList.remove('hidden');
+            document.getElementById('intro-view').style.opacity = 1;
+            document.getElementById('question-view').classList.add('hidden');
+            document.getElementById('question-view').style.opacity = 0;
+            document.getElementById('success-view').classList.add('hidden');
+            document.getElementById('success-view').style.opacity = 0;
+            document.getElementById('petal-overlay').classList.remove('hidden'); // Reset overlay visibility for next time
+            document.getElementById('petal-overlay').innerHTML = ''; // Clear petals
+            document.getElementById('petal-overlay').style.opacity = 1;
+
+            // Remove classes
+            document.body.classList.remove('premium-mode', 'sweet-mode', 'spark-mode');
+
+            // Reset Text
+            document.getElementById('intro-subtitle').style.opacity = 0;
+
+            // Reset Yes Button Scale
+            document.getElementById('yes-btn').style.transform = 'scale(1)';
+            document.getElementById('no-btn').classList.remove('hidden');
+
+            // Reset Next/Yes/No button visibility for next preview
+            document.getElementById('next-msg-btn').classList.remove('hidden');
+            document.getElementById('buttons-container').style.display = 'none';
+
+            // Reset message indices
+            msgIndex = 0;
+            flowIndex = 0;
+        }
+
         setInterval(createPetal, 600);
+
+        function updateCharCount(input) {
+            const limit = input.maxLength;
+            const current = input.value.length;
+            document.getElementById('custom-chars').innerText = `${current}/${limit}`;
+        }
+
+        function toggleCustomMessage(toggle) {
+            const textarea = document.getElementById('custom-message-input');
+            const charCount = document.getElementById('custom-chars');
+            if (toggle.checked) {
+                textarea.classList.remove('hidden', 'opacity-50');
+                textarea.disabled = false;
+                charCount.classList.remove('hidden');
+                textarea.focus();
+            } else {
+                textarea.classList.add('hidden', 'opacity-50');
+                textarea.disabled = true;
+                textarea.value = '';
+                charCount.classList.add('hidden');
+            }
+        }
     </script>
 </body>
 
