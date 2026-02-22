@@ -198,18 +198,6 @@
             letter-spacing: 0.14em;
         }
 
-        .progress-pill {
-            border: 1px solid #F1D5DB;
-            background: rgba(255, 255, 255, 0.85);
-            color: #9A6470;
-            border-radius: 999px;
-            padding: 6px 12px;
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-
         @media (prefers-reduced-motion: reduce) {
             * {
                 scroll-behavior: auto !important;
@@ -505,9 +493,6 @@
 
     <div id="setup-view"
         class="z-20 w-full h-full sm:h-auto sm:max-w-sm px-6 flex flex-col gap-4 text-center glass-card py-6 sm:rounded-[3rem] shadow-2xl overflow-y-auto fade-in-up pb-24">
-        <div class="flex justify-center">
-            <p id="setup-progress" class="progress-pill">Step 1 of 3 • Setup</p>
-        </div>
         <div class="flex flex-col items-center gap-2">
             <img src="logo.png" alt="OdoFlow Logo" class="w-32 h-auto drop-shadow-md">
             <p id="setup-tagline" class="text-xs text-gray-400 leading-relaxed max-w-[260px]">Send a personalised Valentine's message
@@ -688,7 +673,6 @@
         </div>
 
         <div id="question-view" class="hidden flex flex-col items-center gap-12 opacity-0">
-            <p id="flow-progress" class="progress-pill">Step 2 of 3 • Opening Note</p>
             <h1 id="question-text"
                 class="lyrics-text font-elegant italic font-medium min-h-[180px] flex items-center justify-center"></h1>
             <div id="buttons-container" class="flex gap-10 w-full justify-center items-center" style="display:none">
@@ -701,7 +685,6 @@
         </div>
 
         <div id="success-view" class="hidden flex flex-col items-center gap-12 opacity-0">
-            <p id="success-progress" class="progress-pill">Step 3 of 3 • Ending Note</p>
             <div id="heart-trigger">❤️</div>
             <div class="h-32 flex items-center justify-center">
                 <p id="final-message" class="text-3xl font-elegant italic text-gray-700 px-2 max-w-[18ch] leading-tight"></p>
@@ -780,25 +763,6 @@
                 ambientPetalTimer = setInterval(createPetal, 900);
                 ambientBalloonTimer = setInterval(createHeartBalloon, 5000);
             }
-        }
-
-        function setFlowProgress(text) {
-            const el = document.getElementById('flow-progress');
-            if (el) el.innerText = text;
-        }
-
-        function setSuccessProgress() {
-            const el = document.getElementById('success-progress');
-            if (!el) return;
-            const ending = getEndingConfig();
-            el.innerText = `Step 3 of 3 • ${ending.endingLabel}`;
-        }
-
-        function updateMessageProgress(currentIndex, totalMessages, isFinalPrompt) {
-            const safeTotal = Math.max(1, totalMessages || 1);
-            const displayIndex = Math.min(safeTotal, (currentIndex || 0) + 1);
-            const suffix = isFinalPrompt ? ' • Ending Prompt' : '';
-            setFlowProgress(`Step 2 of 3 • Message ${displayIndex} of ${safeTotal}${suffix}`);
         }
 
         function createHeartBalloon() {
@@ -1392,8 +1356,6 @@
             }
 
             applyEndingControls();
-            setFlowProgress('Step 2 of 3 • Opening Note');
-            setSuccessProgress();
 
             // Reply Button Logic
             if (config.senderPhone) {
@@ -1433,10 +1395,8 @@
         function showNext() {
             let message = "";
             let showButtons = false;
-            let totalSteps = 1;
 
             if (config.customMessages && config.customMessages.length > 0) {
-                totalSteps = config.customMessages.length;
                 if (msgIndex < config.customMessages.length) {
                     message = config.customMessages[msgIndex];
                     if (msgIndex === config.customMessages.length - 1) {
@@ -1458,8 +1418,6 @@
                     console.error("Tier missing for this gender/type combination");
                     return;
                 }
-                totalSteps = (tierData.messages ? tierData.messages.length : 0) + 1;
-
                 if (msgIndex < tierData.messages.length) {
                     message = tierData.messages[msgIndex];
                 } else if (msgIndex === tierData.messages.length) {
@@ -1468,7 +1426,6 @@
                 }
             }
 
-            updateMessageProgress(msgIndex, totalSteps, showButtons);
             typeWriter('question-text', message, 50);
 
             if (showButtons) {
@@ -1554,7 +1511,6 @@
 
                     const successObj = getSuccessContent();
                     const ending = getEndingConfig();
-                    setSuccessProgress();
                     document.getElementById('final-message').innerHTML = `<span class="text-xs tracking-[0.35em] uppercase not-italic font-sans text-gray-400 mb-4 block">${ending.endingLabel}</span><span class="text-4xl font-bold not-italic font-sans mb-4 block">${successObj.heading}</span><span class="block mt-2">${successObj.message}</span>`;
 
                     anime({ targets: '#petal-overlay', opacity: 0, duration: reduceMotion ? 250 : 800, delay: reduceMotion ? 0 : 400, complete: () => document.getElementById('petal-overlay').classList.add('hidden') });
@@ -1749,8 +1705,6 @@
             // Reset Yes Button Scale
             document.getElementById('yes-btn').style.transform = 'scale(1)';
             document.getElementById('no-btn').classList.remove('hidden');
-            setFlowProgress('Step 2 of 3 • Opening Note');
-            setSuccessProgress();
 
             // Reset Next/Yes/No button visibility for next preview
             document.getElementById('next-msg-btn').classList.remove('hidden');
