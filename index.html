@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="themes.js"></script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8F8EZ86LKB"></script>
@@ -95,9 +96,11 @@
             padding: 10px 16px;
             border: 1px solid #E5E5E5;
             border-radius: 50px;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.06em;
+            line-height: 1.15;
             transition: 0.3s;
         }
 
@@ -169,15 +172,56 @@
         }
 
         .lyrics-text {
-            font-size: 2.2rem;
-            line-height: 1.4;
+            font-size: 2.05rem;
+            line-height: 1.35;
             color: #2D2D2D;
             padding: 0 20px;
+            max-width: 18ch;
+            margin: 0 auto;
+            text-wrap: balance;
         }
 
         @media (max-width: 640px) {
             .lyrics-text {
-                font-size: 1.8rem;
+                font-size: 1.65rem;
+                max-width: 16ch;
+            }
+        }
+
+        .ui-label {
+            font-size: 12px;
+            letter-spacing: 0.18em;
+        }
+
+        .ui-micro {
+            font-size: 11px;
+            letter-spacing: 0.14em;
+        }
+
+        .progress-pill {
+            border: 1px solid #F1D5DB;
+            background: rgba(255, 255, 255, 0.85);
+            color: #9A6470;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                scroll-behavior: auto !important;
+            }
+
+            .modal-content,
+            .slide-in,
+            .fade-in-up,
+            .text-shimmer,
+            .text-pulse {
+                animation: none !important;
+                transition: none !important;
             }
         }
 
@@ -461,63 +505,110 @@
 
     <div id="setup-view"
         class="z-20 w-full h-full sm:h-auto sm:max-w-sm px-6 flex flex-col gap-4 text-center glass-card py-6 sm:rounded-[3rem] shadow-2xl overflow-y-auto fade-in-up pb-24">
+        <div class="flex justify-center">
+            <p id="setup-progress" class="progress-pill">Step 1 of 3 • Setup</p>
+        </div>
         <div class="flex flex-col items-center gap-2">
             <img src="logo.png" alt="OdoFlow Logo" class="w-32 h-auto drop-shadow-md">
-            <p class="text-xs text-gray-400 leading-relaxed max-w-[260px]">Send a personalised Valentine's message
+            <p id="setup-tagline" class="text-xs text-gray-400 leading-relaxed max-w-[260px]">Send a personalised Valentine's message
                 to someone special. Pick a vibe, choose your tier, and share the love 💕</p>
         </div>
 
-        <!-- Gender Selector -->
-        <div class="flex flex-col gap-2 text-left">
-            <p class="text-[11px] uppercase tracking-widest text-gray-400 font-bold ml-2">Sending To</p>
-            <div class="flex justify-center gap-2">
-                <button onclick="setGender('her')" id="gen-her" class="btn-choice active">Her 👧</button>
-                <button onclick="setGender('him')" id="gen-him" class="btn-choice">Him 👦</button>
-                <button onclick="setGender('them')" id="gen-them" class="btn-choice">Them 🧑</button>
+        <!-- Occasion Toggle -->
+        <div class="flex flex-col gap-2 text-left w-full">
+            <p class="ui-label uppercase text-gray-400 font-bold ml-2">Occasion</p>
+            <div class="flex overflow-x-auto gap-2 pb-2" style="scrollbar-width: none;">
+                <button onclick="setOccasion('valentine')" id="occ-valentine"
+                    class="btn-choice active whitespace-nowrap">Valentine</button>
+                <button onclick="setOccasion('birthday')" id="occ-birthday"
+                    class="btn-choice whitespace-nowrap">Birthday</button>
+                <button onclick="setOccasion('anniversary')" id="occ-anniversary"
+                    class="btn-choice whitespace-nowrap">Anniversary</button>
+                <button onclick="setOccasion('apology')" id="occ-apology"
+                    class="btn-choice whitespace-nowrap">Apology</button>
+                <button onclick="setOccasion('just_because')" id="occ-just_because"
+                    class="btn-choice whitespace-nowrap">Just Because</button>
             </div>
         </div>
 
+        <div id="valentine-fields" class="flex flex-col gap-4">
+            <!-- Gender Selector -->
+            <div class="flex flex-col gap-2 text-left">
+                <p class="ui-label uppercase text-gray-400 font-bold ml-2">Sending To</p>
+                <div class="flex justify-center gap-2">
+                    <button onclick="setGender('her')" id="gen-her" class="btn-choice active">Her 👧</button>
+                    <button onclick="setGender('him')" id="gen-him" class="btn-choice">Him 👦</button>
+                    <button onclick="setGender('them')" id="gen-them" class="btn-choice">Them 🧑</button>
+                </div>
+            </div>
 
-        <div class="flex flex-col gap-2 text-left">
-            <p class="text-[11px] uppercase tracking-widest text-gray-400 font-bold ml-2">Relationship</p>
-            <div class="flex flex-wrap justify-center gap-2">
-                <button onclick="setRel('lover')" id="rel-lover" class="btn-choice active">Lover</button>
-                <button onclick="setRel('crush')" id="rel-crush" class="btn-choice">Crush</button>
-                <button onclick="setRel('parent')" id="rel-parent" class="btn-choice">Parent</button>
-                <button onclick="setRel('child')" id="rel-child" class="btn-choice">Child</button>
-                <button onclick="setRel('sibling')" id="rel-sibling" class="btn-choice">Sibling</button>
-                <button onclick="setRel('friend')" id="rel-friend" class="btn-choice">Friend</button>
-                <button onclick="setRel('colleague')" id="rel-colleague" class="btn-choice">Colleague</button>
-                <button onclick="setRel('boss')" id="rel-boss" class="btn-choice">Boss</button>
-                <button onclick="setRel('enemy')" id="rel-enemy" class="btn-choice">Enemy</button>
+
+            <div class="flex flex-col gap-2 text-left">
+                <p class="ui-label uppercase text-gray-400 font-bold ml-2">Relationship</p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button onclick="setRel('lover')" id="rel-lover" class="btn-choice active">Lover</button>
+                    <button onclick="setRel('crush')" id="rel-crush" class="btn-choice">Crush</button>
+                    <button onclick="setRel('parent')" id="rel-parent" class="btn-choice">Parent</button>
+                    <button onclick="setRel('child')" id="rel-child" class="btn-choice">Child</button>
+                    <button onclick="setRel('sibling')" id="rel-sibling" class="btn-choice">Sibling</button>
+                    <button onclick="setRel('friend')" id="rel-friend" class="btn-choice">Friend</button>
+                    <button onclick="setRel('colleague')" id="rel-colleague" class="btn-choice">Colleague</button>
+                    <button onclick="setRel('boss')" id="rel-boss" class="btn-choice">Boss</button>
+                    <button onclick="setRel('enemy')" id="rel-enemy" class="btn-choice">Enemy</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="birthday-fields" class="flex flex-col gap-4 hidden">
+            <input type="date" id="birth-date" class="setup-input" placeholder="Birth Date">
+
+            <div class="flex flex-col gap-2 text-left">
+                <p class="ui-label uppercase text-gray-400 font-bold ml-2">Celebrant</p>
+                <div class="flex justify-center gap-2">
+                    <button onclick="setGender('her')" id="bday-gen-her" class="btn-choice active">Her 👧</button>
+                    <button onclick="setGender('him')" id="bday-gen-him" class="btn-choice">Him 👦</button>
+                    <button onclick="setGender('them')" id="bday-gen-them" class="btn-choice">Them 🧑</button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 text-left">
+                <p class="ui-label uppercase text-gray-400 font-bold ml-2">Style</p>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button onclick="setStyle('funny')" id="style-funny" class="btn-choice active">Funny</button>
+                    <button onclick="setStyle('sweet')" id="style-sweet" class="btn-choice">Sweet</button>
+                    <button onclick="setStyle('romantic')" id="style-romantic" class="btn-choice">Romantic</button>
+                    <button onclick="setStyle('biblical')" id="style-biblical" class="btn-choice">Biblical</button>
+                    <button onclick="setStyle('professional')" id="style-professional"
+                        class="btn-choice">Professional</button>
+                </div>
             </div>
         </div>
 
         <div class="flex flex-col gap-2 text-left">
-            <p class="text-[11px] uppercase tracking-widest text-gray-400 font-bold ml-2">Tier</p>
+            <p id="tier-label" class="ui-label uppercase text-gray-400 font-bold ml-2">Tier</p>
             <div class="grid grid-cols-4 gap-2">
                 <button onclick="setPrice(0)" id="p-0" class="price-btn active"><span
-                        class="block text-sm font-bold">₵0</span><span class="text-[9px] uppercase">Free</span></button>
+                        class="block text-sm font-bold">₵0</span><span class="ui-micro uppercase">Free</span></button>
                 <button onclick="setPrice(2)" id="p-2" class="price-btn"><span
                         class="block text-sm font-bold">₵2</span><span
-                        class="text-[9px] uppercase">Basic</span></button>
+                        class="ui-micro uppercase">Basic</span></button>
                 <button onclick="setPrice(5)" id="p-5" class="price-btn"><span
                         class="block text-sm font-bold">₵5</span><span
-                        class="text-[9px] uppercase">Sweet</span></button>
+                        class="ui-micro uppercase">Sweet</span></button>
                 <button onclick="setPrice(10)" id="p-10" class="price-btn"><span
                         class="block text-sm font-bold">₵10</span><span
-                        class="text-[9px] uppercase">Heavy</span></button>
+                        class="ui-micro uppercase">Heavy</span></button>
             </div>
         </div>
         <p id="tier-description" class="text-xs text-gray-500 italic px-4 mt-2 h-8 leading-tight">
             Standard romantic notes.
         </p>
 
-        <input type="text" id="target-name" class="setup-input" placeholder="Their Name">
+        <input type="text" id="target-name" class="setup-input" placeholder="Their Name" autocomplete="off">
 
         <!-- Sender Inputs (Paid Only) -->
         <div id="sender-inputs" class="w-full flex flex-col gap-2 hidden">
-            <input type="text" id="sender-name" class="setup-input" placeholder="Your Name">
+            <input type="text" id="sender-name" class="setup-input" placeholder="Your Name" autocomplete="off">
         </div>
 
         <!-- WhatsApp Input (Paid Only) -->
@@ -539,7 +630,7 @@
                     </label>
                     <span class="text-xs uppercase font-bold text-gray-400 tracking-widest">Custom Message</span>
                 </div>
-                <span id="custom-chars" class="text-[11px] text-gray-400 font-mono hidden">0/60</span>
+                <span id="custom-chars" class="text-xs text-gray-400 font-mono hidden">0/60</span>
             </div>
             <textarea id="custom-message-input" rows="3" class="setup-input resize-none hidden opacity-50" disabled
                 placeholder="Write your own message..." oninput="updateCharCount(this)"></textarea>
@@ -568,13 +659,13 @@
                 </button>
             </div>
 
-            <p id="copy-status" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest opacity-0 mt-2">
+            <p id="copy-status" class="text-xs text-rose-500 font-bold uppercase tracking-[0.18em] opacity-0 mt-2">
                 Link Copied!
                 Send it now.</p>
 
             <div class="mt-2 pt-4 border-t border-gray-100 w-full">
                 <a href="https://github.com/iamrichid" target="_blank"
-                    class="block text-[8px] text-gray-300 hover:text-rose-400 font-bold uppercase tracking-widest transition">
+                    class="block text-[11px] text-gray-300 hover:text-rose-400 font-bold uppercase tracking-[0.14em] transition">
                     Built by Richard
                 </a>
             </div>
@@ -597,27 +688,29 @@
         </div>
 
         <div id="question-view" class="hidden flex flex-col items-center gap-12 opacity-0">
+            <p id="flow-progress" class="progress-pill">Step 2 of 3 • Opening Note</p>
             <h1 id="question-text"
                 class="lyrics-text font-elegant italic font-medium min-h-[180px] flex items-center justify-center"></h1>
             <div id="buttons-container" class="flex gap-10 w-full justify-center items-center" style="display:none">
                 <button id="yes-btn"
-                    class="text-[16px] tracking-[0.2em] uppercase text-rose-500 font-black">Yes</button>
-                <button id="no-btn" class="text-[14px] tracking-[0.2em] uppercase text-gray-300">No</button>
+                    class="text-[16px] tracking-[0.14em] uppercase text-rose-500 font-black">Yes</button>
+                <button id="no-btn" class="text-[14px] tracking-[0.14em] uppercase text-gray-300">No</button>
             </div>
-            <button id="next-msg-btn" class="text-[13px] tracking-[0.3em] uppercase text-rose-400 font-bold">Continue
+            <button id="next-msg-btn" class="text-[13px] tracking-[0.16em] uppercase text-rose-400 font-bold">Continue
                 →</button>
         </div>
 
         <div id="success-view" class="hidden flex flex-col items-center gap-12 opacity-0">
+            <p id="success-progress" class="progress-pill">Step 3 of 3 • Ending Note</p>
             <div id="heart-trigger">❤️</div>
             <div class="h-32 flex items-center justify-center">
-                <p id="final-message" class="text-3xl font-elegant italic text-gray-700 px-2"></p>
+                <p id="final-message" class="text-3xl font-elegant italic text-gray-700 px-2 max-w-[18ch] leading-tight"></p>
             </div>
             <button id="reply-btn"
-                class="hidden text-[12px] tracking-[0.3em] uppercase bg-[#25D366] text-white px-8 py-3 rounded-full shadow-lg font-bold hover:scale-105 transition">Send
+                class="hidden text-[12px] tracking-[0.16em] uppercase bg-[#25D366] text-white px-8 py-3 rounded-full shadow-lg font-bold hover:scale-105 transition">Send
                 My Reply 💖</button>
             <button onclick="location.href=location.pathname"
-                class="text-[10px] tracking-[0.3em] uppercase text-rose-400 border border-rose-100 px-6 py-2 rounded-full">Create
+                class="text-[11px] tracking-[0.16em] uppercase text-rose-400 border border-rose-100 px-6 py-2 rounded-full">Create
                 Your Own</button>
         </div>
     </div>
@@ -625,306 +718,18 @@
 
 
     <script>
-        const themes = {
-            lover: {
-                emojis: ['🌸', '🌹', '❤️', '💕'],
-                music: "https://www.bensound.com/bensound-music/bensound-love.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["“Obi doba, m'ani agye wo ho.”", "Chale, your love sweet pass Ghana Jollof.", "You are my Black Star—the brightest light.", "I want to build a world with only you.", "Will you be my Valentine?"],
-                            basic: ["Every moment with you is a blessing.", "You make my heart beat faster.", "I can't imagine life without you.", "You are my favorite notification.", "Will you be my Valentine?"],
-                            sweet: ["You are the sugar in my koko.", "My love for you is bigger than the ocean.", "I promise to always be by your side.", "You are my everything, my Odo.", "Will you be my Valentine forever?"],
-                            heavy: ["My soul recognized you before my eyes did.", "I am yours, in this life and the next.", "You are the answered prayer I waited for.", "I love you more than words can carry.", "Will you be my eternal Valentine?"]
-                        },
-                        success: ["You are my blessing.", "You are my Queen.", "Forever yours.", "I love you truly."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["You are my calm in the chaos.", "Chale, you be my gee for life.", "You make me feel safe.", "I want to build a vibe with you.", "Will you be my Valentine?"],
-                            basic: ["Every moment with you is a vibe.", "You make my heart beat faster.", "I respect and adore you.", "You're the King of my heart.", "Will you be my Valentine?"],
-                            sweet: ["You are my strength and my peace.", "My love for you is deep.", "I promise to always back you up.", "You are my everything, my Odo.", "Will you be my Valentine forever?"],
-                            heavy: ["My soul recognized you instantly.", "I am yours, fully.", "You are the man I prayed for.", "I love you more than words can carry.", "Will you be my King?"]
-                        },
-                        success: ["You are my King.", "My Protector.", "Forever yours.", "I love you truly."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["You are my person.", "Chale, our vibe is unmatched.", "You make me smile.", "I want to be with you.", "Will you be my Valentine?"],
-                            basic: ["Every moment with you is a blessing.", "You are my heart.", "Life means more with you.", "My favorite human.", "Will you be my Valentine?"],
-                            sweet: ["You are the sweetness in my life.", "My love for you is big.", "Always by your side.", "You are my Odo.", "Will you be my Valentine forever?"],
-                            heavy: ["My soul recognized you.", "I am yours.", "You are my answered prayer.", "I love you deeply.", "Will you be my Valentine?"]
-                        },
-                        success: ["You are my blessing.", "My Love.", "Forever yours.", "I love you."]
-                    }
-                }
-            },
-            crush: {
-                emojis: ['😍', '👀', '✨', '💌'],
-                music: "https://www.bensound.com/bensound-music/bensound-love.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["I’ve been shy to say this...", "Every time I see you, my heart speeds up.", "You are the only vibe I’m feeling.", "Could we be more than friends?", "Will you be my Valentine?"],
-                            basic: ["I smile at my phone when it's you.", "You are effortlessly beautiful.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
-                            sweet: ["You are the crush that never faded.", "I want to be the reason you smile.", "Let's stop pretending we're just friends.", "You have my heart already.", "Can I take you out?"],
-                            heavy: ["I am falling for you, hard.", "You remain the most beautiful mystery.", "I want to know every part of you.", "My heart chooses you, every time.", "Be mine, please?"]
-                        },
-                        success: ["I'm glad I said it.", "You're beautiful.", "Let's see where this goes.", "You're special."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["I’ve been eyeing you lowkey...", "My heart does a thing when you walk inside.", "You be the only vibe I’m feeling.", "Could we be more than friends?", "Will you be my Valentine?"],
-                            basic: ["I smile at my phone when it's you.", "You are handsome as hell.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
-                            sweet: ["You are the crush that stuck.", "I want to be the reason you smile.", "No more just friends.", "You have my heart already.", "Can we link up?"],
-                            heavy: ["I am falling for you, hard.", "You remain the most incredible man I know.", "I want to know every part of you.", "My heart chooses you, every time.", "Be mine, please?"]
-                        },
-                        success: ["I'm glad I said it.", "You're valid.", "Let's see where this goes.", "You're special."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["I’ve been shy to say this...", "Every time I see you, it's a mood.", "You be the only vibe I’m feeling.", "Could we be more than friends?", "Will you be my Valentine?"],
-                            basic: ["I smile at my phone when it's you.", "You are stunning.", "You make ordinary days special.", "I really, really like you.", "Will you be my Valentine?"],
-                            sweet: ["You are the crush that never faded.", "I want to be the reason you smile.", "Let's stop pretending we're just friends.", "You have my heart already.", "Can I take you out?"],
-                            heavy: ["I am falling for you, hard.", "You are the most beautiful soul I've met.", "I want to build a future with you.", "My heart chooses you, every time.", "Be with me?"]
-                        },
-                        success: ["I'm glad I said it.", "You make me smile.", "Let's see where this goes.", "You're special."]
-                    }
-                }
-            },
-            parent: {
-                emojis: ['👑', '🛡️', '💐', '🏡'],
-                music: "https://www.bensound.com/bensound-music/bensound-love.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["Everything I am is because of you.", "God really blessed me with the best Mom.", "Thank you for the sacrifices.", "Your prayers keep me going.", "Can I tell you I love you today?"],
-                            basic: ["You taught me what love really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you, Mom!"],
-                            sweet: ["Home is wherever you are.", "Your wisdom guides my every step.", "I am so proud to be your child.", "May God bless you abundantly.", "Love you always."],
-                            heavy: ["You gave me life and taught me to live.", "I owe you everything good in me.", "Your love is purest.", "I will always take care of you.", "I love you deeply, Ma."]
-                        },
-                        success: ["You are my Queen.", "God bless you.", "Best Mom ever.", "I appreciate you."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["Everything I am is because of you.", "God really blessed me with the best Dad.", "Thank you for the sacrifices.", "Your guidance keeps me going.", "Can I tell you I love you today?"],
-                            basic: ["You taught me what strength really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you, Dad!"],
-                            sweet: ["You built this home for us.", "Your wisdom guides my steps.", "I am so proud to be your child.", "May God bless you abundantly.", "Love you always."],
-                            heavy: ["You gave me life and taught me to be strong.", "I owe you everything good in me.", "Your love is solid.", "I will always take care of you.", "I love you deeply, Pa."]
-                        },
-                        success: ["You are my Hero.", "God bless you.", "Best Dad ever.", "I appreciate you."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["Everything I am is because of you.", "God blessed me with you.", "Thank you for the sacrifices.", "Your prayers keep me going.", "Can I tell you I love you today?"],
-                            basic: ["You taught me what love really means.", "Thank you for being my rock.", "I appreciate you more as I grow.", "You are appreciated.", "I love you!"],
-                            sweet: ["Home is wherever you are.", "Your wisdom guides my steps.", "I am so proud to be yours.", "May God bless you abundantly.", "Love you always."],
-                            heavy: ["You are my absolute foundation.", "I owe you my life and my happiness.", "Your love is the greatest gift.", "I will forever cherish you.", "I love you beyond words."]
-                        },
-                        success: ["You are my hero.", "God bless you.", "The real GOAT.", "I appreciate you."]
-                    }
-                }
-            },
-            child: {
-                emojis: ['🌞', '🧸', '🎈', '🐣'],
-                music: "https://www.bensound.com/bensound-music/bensound-ukulele.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little Princess.", "Love you, baby girl!"],
-                            basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you daughter!"],
-                            sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."],
-                            heavy: ["My love for you has no conditions.", "I will move mountains for you.", "You are my heart walking outside.", "Forever my baby girl.", "I love you deep."]
-                        },
-                        success: ["My Princess.", "Shine on.", "Love you always.", "You're the best."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little King.", "Love you, son!"],
-                            basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you son!"],
-                            sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."],
-                            heavy: ["My love for you has no conditions.", "I will move mountains for you.", "You are my heart walking outside.", "Forever my boy.", "I love you deep."]
-                        },
-                        success: ["My Champion.", "Shine on.", "Love you always.", "You're the best."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["You are my sunshine.", "Watching you grow is my greatest joy.", "You make me so proud everyday.", "My little blessing.", "Love you, kiddo!"],
-                            basic: ["You are the best thing that happened to me.", "Keep shining bright.", "I will always be your biggest fan.", "My heart beats for you.", "Love you!"],
-                            sweet: ["I promise to always guide you.", "You are smarter and stronger than you know.", "The world is better with you in it.", "You are my legacy.", "Love you endlessly."],
-                            heavy: ["My love for you is infinite.", "You are my greatest pride and joy.", "I will always protect and support you.", "You are my whole world.", "I love you endlessly."]
-                        },
-                        success: ["My pride and joy.", "Shine on.", "Love you always.", "You're the best."]
-                    }
-                }
-            },
-            sibling: {
-                emojis: ['🎮', '🍕', '🤪', '🤛'],
-                music: "https://www.bensound.com/bensound-music/bensound-funny.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["You’re annoying, but you're my person.", "Still stealing my clothes?", "Best sister ever (mostly).", "Thanks for keeping my secrets.", "Love you, sis!"],
-                            basic: ["We fight, we make up, we ride.", "Life is better with you.", "You're my first best friend.", "Thanks for having my back.", "Love you, nuisance."],
-                            sweet: ["You know me better than anyone.", "Lucky to have a sister like you.", "My favorite person to disturb.", "Always here for you.", "Love you!"],
-                            heavy: ["You're not just my sister, you're my soulmate.", "I would do anything for you.", "Our bond is unbreakable.", "Thank you for being my anchor.", "Love you forever, sis."]
-                        },
-                        success: ["Sister sister.", "Siblings 4L.", "Love you.", "Got your back."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["You’re annoying, but you're my guy.", "Still chopping my food?", "Best brother ever.", "Thanks for not snitching.", "Love you, bro!"],
-                            basic: ["We fight, we make up, we ride.", "Life is better with you.", "You're my day one.", "Thanks for having my back.", "Love you, man."],
-                            sweet: ["You know me better than anyone.", "Lucky to have a brother like you.", "My favorite person to disturb.", "Always here for you.", "Love you!"],
-                            heavy: ["You're not just my brother, you're my best friend.", "I've always looked up to you.", "Our bond is for life.", "Thanks for being my protector.", "Love you forever, bro."]
-                        },
-                        success: ["Brotherhood.", "Day One.", "Love you.", "Got your back."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["You’re annoying, but you're my person.", "I'd still share my last plantain with you.", "The best partner-in-crime.", "Thanks for not snitching.", "Love you!"],
-                            basic: ["We fight, we make up, we ride.", "Life is better with you.", "You're my first best friend.", "Thanks for having my back.", "Love you, nuisance."],
-                            sweet: ["You know me better than anyone.", "Lucky to grow up with you.", "My favorite person to disturb.", "Always here for you.", "Love you!"],
-                            heavy: ["You are my first and forever friend.", "I am so lucky to have you in my life.", "We share a bond that nothing can break.", "I will always be here for you.", "Love you deeply."]
-                        },
-                        success: ["Blood is thicker.", "Siblings 4L.", "Love you.", "Got your back."]
-                    }
-                }
-            },
-            friend: {
-                emojis: ['🥂', '🤝', '🌟', '👯'],
-                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "You make life fun, girl.", "Will you be my Galentine?", "Love you!"],
-                            basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "Besties 4L?"],
-                            sweet: ["You are the sister I chose.", "Life is boring without you.", "Thanks for being my listener.", "You're a rare gem.", "Love you friend!"],
-                            heavy: ["You are a once-in-a-lifetime friend.", "I appreciate you more than you know.", "Thanks for always being there.", "You are my chosen family.", "Love you forever!"]
-                        },
-                        success: ["Besties.", "Always got you.", "Cheers.", "You're a gem."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "You make life fun, bro.", "Happy Valentine's, man.", "Bless up!"],
-                            basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "My Gee for life."],
-                            sweet: ["You are the brother I chose.", "Life is boring without you.", "Thanks for being solid.", "You're a rare gem.", "Love you bro!"],
-                            heavy: ["You are a once-in-a-lifetime friend.", "I appreciate you more than you know.", "Thanks for always being there.", "You are my chosen family.", "Love you forever!"]
-                        },
-                        success: ["My Guy.", "Always got you.", "Cheers.", "Solid."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["Real ones are hard to find.", "Glad we're on the same vibe.", "Thank you for being there.", "You make life much more fun.", "Will you be my Bestie forever?"],
-                            basic: ["Thanks for being a real one.", "Vibes on vibes with you.", "You make the tough days easier.", "Cheers to us.", "Besties 4L?"],
-                            sweet: ["You are the family I chose.", "Life is boring without you.", "Thanks for being my listener.", "You're a rare gem.", "Love you friend!"],
-                            heavy: ["You are a once-in-a-lifetime friend.", "I appreciate you more than you know.", "Thanks for always being there.", "You are my chosen family.", "Love you forever!"]
-                        },
-                        success: ["Friends for life.", "Always got your back.", "To many more vibes.", "You're a gem."]
-                    }
-                }
-            },
-            colleague: {
-                emojis: ['💼', '☕', '💻', '📈'],
-                music: "https://www.bensound.com/bensound-music/bensound-energy.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Coffee on me soon?", "Best work buddy."],
-                            basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
-                            sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."],
-                            heavy: ["You make every project better.", "I'm grateful to have you as a colleague.", "Thanks for being such a great teammate.", "You're a true professional and a friend.", "Looking forward to more wins!"]
-                        },
-                        success: ["Work besties.", "See you at the office.", "Keep winning.", "You're appreciated."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Lunch on me soon?", "Best work buddy."],
-                            basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
-                            sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."],
-                            heavy: ["You make every project better.", "I'm grateful to have you as a colleague.", "Thanks for being such a great teammate.", "You're a true professional and a friend.", "Looking forward to more wins!"]
-                        },
-                        success: ["Work pals.", "See you at the office.", "Keep winning.", "You're appreciated."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["Thanks for not being annoying.", "You make work bearable.", "Happy Valentine's Day!", "Coffee on me soon?", "Best work buddy."],
-                            basic: ["I appreciate your help always.", "You're a great team player.", "Glad we work together.", "Thanks for saving me in meetings.", "You're cool."],
-                            sweet: ["My favorite work bestie.", "I'd actually hang out with you outside work.", "You make the office fun.", "Thanks for the support.", "You're a star."],
-                            heavy: ["You make every project better.", "I'm grateful to have you as a colleague.", "Thanks for being such a great teammate.", "You're a true professional and a friend.", "Looking forward to more wins!"]
-                        },
-                        success: ["Work besties.", "See you at the office.", "Keep winning.", "You're appreciated."]
-                    }
-                }
-            },
-            boss: {
-                emojis: ['👔', '🚀', '🎯', '🤝'],
-                music: "https://www.bensound.com/bensound-music/bensound-corporate.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["Happy Valentine's Day!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
-                            basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
-                            sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."],
-                            heavy: ["Thank you for your incredible leadership.", "I've learned so much from you.", "Your vision is inspiring.", "I appreciate the opportunities you've given me.", "Happy Valentine's Day, Boss!"]
-                        },
-                        success: ["Respect.", "Thank you, Ma'am.", "Great leadership.", "To more wins."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["Happy Valentine's Day, Boss!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
-                            basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
-                            sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."],
-                            heavy: ["Thank you for your incredible leadership.", "I've learned so much from you.", "Your vision is inspiring.", "I appreciate the opportunities you've given me.", "Happy Valentine's Day, Boss!"]
-                        },
-                        success: ["Respect, Boss.", "Thank you, Sir.", "Great leadership.", "To more wins."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["Happy Valentine's Day, Boss!", "Thanks for the opportunity.", "Great leadership.", "Have a nice day!", "Best Boss."],
-                            basic: ["Thanks for guiding the team.", "I appreciate your patience.", "Glad to be on your team.", "Thanks for the support.", "You lead well."],
-                            sweet: ["Best boss ever. (Raise next?)", "You make work inspiring.", "Thanks for believing in me.", "A true leader.", "Grateful for you."],
-                            heavy: ["Thank you for your incredible leadership.", "I've learned so much from you.", "Your vision is inspiring.", "I appreciate the opportunities you've given me.", "Happy Valentine's Day, Boss!"]
-                        },
-                        success: ["Respect, Boss.", "Thank you.", "Great leadership.", "To more wins."]
-                    }
-                }
-            },
-            enemy: {
-                emojis: ['💀', '🗡️', '💔', '😐'],
-                music: "https://www.bensound.com/bensound-music/bensound-scifi.mp3",
-                messages: {
-                    her: {
-                        tiers: {
-                            free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "We are not friends.", "I'm the one God blessed. Agree?"],
-                            basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
-                            sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", "Peace out."],
-                            heavy: ["I know you're watching, so here's some grace to see.", "My light won't dim for your comfort.", "I wish you healing and peace.", "I'm too blessed to be stressed by you.", "Moving on with love."]
-                        },
-                        success: ["Victory is mine.", "Keep watching.", "Nothing can stop me.", "Psalm 23:5 always."]
-                    },
-                    him: {
-                        tiers: {
-                            free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "We are not friends.", "I'm the one God blessed. Agree?"],
-                            basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
-                            sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", "Peace out."],
-                            heavy: ["I know you're watching, so here's some grace to see.", "My light won't dim for your comfort.", "I wish you healing and peace.", "I'm too blessed to be stressed by you.", "Moving on with love."]
-                        },
-                        success: ["Victory is mine.", "Keep watching.", "Nothing can stop me.", "Psalm 23:5 always."]
-                    },
-                    them: {
-                        tiers: {
-                            free: ["I know you dey watch me like DSTV.", "Your eye-red no fit stop my grace.", "Even Shatta Wale say: 'My enemies shame.'", "We are not friends.", "I'm the one God blessed. Agree?"],
-                            basic: ["Keep watching, the show just started.", "Validation? I don't need yours.", "I'm busy winning.", "Grace is natural.", "Bye!"],
-                            sweet: ["I actually pray for you.", "Hope you find peace.", "No bad vibes here.", "Bless up.", "Peace."],
-                            heavy: ["I know you're watching, so here's some grace to see.", "My light won't dim for your comfort.", "I wish you healing and peace.", "I'm too blessed to be stressed by you.", "Moving on with love."]
-                        },
-                        success: ["Victory is mine.", "Keep watching.", "Nothing can stop me.", "Psalm 23:5 always."]
-                    }
-                }
-            }
-        };
-        let config = { name: "", sender: "", senderPhone: "", senderEmail: "", type: "lover", gender: "her", tier: "free", amount: 0, customMessage: "" };
+        const themes = window.THEMES_DATA || {};
+        let config = { occasion: "valentine", birthDate: "", bdayStyle: "funny", name: "", sender: "", senderPhone: "", senderEmail: "", type: "lover", gender: "her", tier: "free", amount: 0, customMessage: "" };
+        const motionPreference = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+        let reduceMotion = !!(motionPreference && motionPreference.matches);
+        let ambientPetalTimer = null;
+        let ambientBalloonTimer = null;
+        if (motionPreference && motionPreference.addEventListener) {
+            motionPreference.addEventListener('change', (e) => {
+                reduceMotion = !!e.matches;
+                restartAmbientEffects();
+            });
+        }
 
 
         const SECRET_KEY = "OdoFlow_Val_2026_Secret"; // Simple obfuscation key
@@ -962,8 +767,70 @@
             return note.note_data;
         }
 
+        function restartAmbientEffects() {
+            if (ambientPetalTimer) {
+                clearInterval(ambientPetalTimer);
+                ambientPetalTimer = null;
+            }
+            if (ambientBalloonTimer) {
+                clearInterval(ambientBalloonTimer);
+                ambientBalloonTimer = null;
+            }
+            if (!reduceMotion) {
+                ambientPetalTimer = setInterval(createPetal, 900);
+                ambientBalloonTimer = setInterval(createHeartBalloon, 5000);
+            }
+        }
+
+        function setFlowProgress(text) {
+            const el = document.getElementById('flow-progress');
+            if (el) el.innerText = text;
+        }
+
+        function setSuccessProgress() {
+            const el = document.getElementById('success-progress');
+            if (!el) return;
+            const ending = getEndingConfig();
+            el.innerText = `Step 3 of 3 • ${ending.endingLabel}`;
+        }
+
+        function updateMessageProgress(currentIndex, totalMessages, isFinalPrompt) {
+            const safeTotal = Math.max(1, totalMessages || 1);
+            const displayIndex = Math.min(safeTotal, (currentIndex || 0) + 1);
+            const suffix = isFinalPrompt ? ' • Ending Prompt' : '';
+            setFlowProgress(`Step 2 of 3 • Message ${displayIndex} of ${safeTotal}${suffix}`);
+        }
+
+        function createHeartBalloon() {
+            if (document.hidden || reduceMotion) return;
+            const balloon = document.createElement('div');
+            balloon.className = 'heart-balloon';
+            const size = Math.random() * 60 + 50; // Larger balloons
+            const hearts = ['💝', '💖', '💗', '💓', '🏩', '🏩'];
+            balloon.innerHTML = `<span style="font-size: ${size}px">${hearts[Math.floor(Math.random() * hearts.length)]}</span>`;
+
+            balloon.style.left = Math.random() * 100 + 'vw';
+            balloon.style.opacity = Math.random() * 0.4 + 0.2;
+            document.body.appendChild(balloon);
+
+            anime({
+                targets: balloon,
+                translateY: ['110vh', '-20vh'],
+                translateX: [
+                    { value: (Math.random() - 0.5) * 150, duration: 6000, easing: 'easeInOutSine' },
+                    { value: (Math.random() - 0.5) * 150, duration: 6000, easing: 'easeInOutSine' }
+                ],
+                rotate: (Math.random() - 0.5) * 45,
+                duration: Math.random() * 10000 + 15000,
+                easing: 'linear',
+                complete: () => balloon.remove()
+            });
+        }
+
         window.onload = async () => {
             const params = new URLSearchParams(window.location.search);
+            const routeOccasion = window.location.pathname.toLowerCase().includes('birthday') ? 'birthday' : null;
+            const presetOccasion = normalizeOccasion(params.get('occasion')) || routeOccasion;
 
             // 0. Check for Supabase ID (New Standard)
             if (params.has('id')) {
@@ -990,14 +857,17 @@
                 config.gender = params.get('gender') || 'her';
                 config.tier = params.get('tier') || 'free';
                 startExperience();
+            } else if (presetOccasion) {
+                setOccasion(presetOccasion);
             }
 
-
-            setInterval(createPetal, 600); // Slightly slower spawning for larger elements
+            updateOccasionCopy();
+            restartAmbientEffects();
 
             // Interactive Love Trail (Enhanced with Sparkles)
             let lastTrailTime = 0;
             const handleTrail = (e) => {
+                if (reduceMotion) return;
                 const now = Date.now();
                 if (now - lastTrailTime < 40) return; // Slightly faster
                 lastTrailTime = now;
@@ -1014,41 +884,13 @@
                 heart.style.top = `${y}px`;
                 document.body.appendChild(heart);
 
-                setTimeout(() => heart.remove(), 1200);
+                setTimeout(() => heart.remove(), reduceMotion ? 500 : 1200);
             };
 
-            document.addEventListener('mousemove', handleTrail);
-            document.addEventListener('touchmove', handleTrail, { passive: true });
-
-            // Floating Background Balloons Spawning
-            function createHeartBalloon() {
-                if (document.hidden) return;
-                const balloon = document.createElement('div');
-                balloon.className = 'heart-balloon';
-                const size = Math.random() * 60 + 50; // Larger balloons
-                const hearts = ['💝', '💖', '💗', '💓', '🏩', '🏩'];
-                balloon.innerHTML = `<span style="font-size: ${size}px">${hearts[Math.floor(Math.random() * hearts.length)]}</span>`;
-
-                balloon.style.left = Math.random() * 100 + 'vw';
-                balloon.style.opacity = Math.random() * 0.4 + 0.2;
-                document.body.appendChild(balloon);
-
-                anime({
-                    targets: balloon,
-                    translateY: ['110vh', '-20vh'],
-                    translateX: [
-                        { value: (Math.random() - 0.5) * 150, duration: 6000, easing: 'easeInOutSine' },
-                        { value: (Math.random() - 0.5) * 150, duration: 6000, easing: 'easeInOutSine' }
-                    ],
-                    rotate: (Math.random() - 0.5) * 45,
-                    duration: Math.random() * 10000 + 15000, // Very slow
-                    easing: 'linear',
-                    complete: () => balloon.remove()
-                });
+            if (!reduceMotion) {
+                document.addEventListener('mousemove', handleTrail);
+                document.addEventListener('touchmove', handleTrail, { passive: true });
             }
-
-            setInterval(createHeartBalloon, 4000); // Spawn every 4 seconds
-
 
         };
 
@@ -1066,20 +908,224 @@
             } catch (e) { console.error("Decrypt Error", e); return null; }
         }
 
+        const VALID_OCCASIONS = ['valentine', 'birthday', 'anniversary', 'apology', 'just_because'];
+
+        function normalizeOccasion(value) {
+            return VALID_OCCASIONS.includes(value) ? value : null;
+        }
+
+        function getOccasionLabel(occasion = config.occasion) {
+            const labels = {
+                valentine: "Valentine",
+                birthday: "Birthday",
+                anniversary: "Anniversary",
+                apology: "Apology",
+                just_because: "Just Because"
+            };
+            return labels[occasion] || "Special";
+        }
+
+        function getOccasionTagline(occasion = config.occasion) {
+            const copy = {
+                valentine: "Send a personalised Valentine's message to someone special. Pick a vibe, choose your tier, and share the love 💕",
+                birthday: "Create a birthday surprise message with the right tone. Pick a style, choose your tier, and share the joy 🎂",
+                anniversary: "Craft an anniversary message that feels personal. Pick a vibe, choose your tier, and celebrate your story 🥂",
+                apology: "Say sorry with a message that feels sincere. Pick a tone, choose your tier, and make it personal 🤍",
+                just_because: "Send a thoughtful message for no reason at all. Pick a vibe, choose your tier, and brighten their day ✨"
+            };
+            return copy[occasion] || copy.valentine;
+        }
+
+        function getShareModalText(occasion = config.occasion) {
+            if (occasion === 'birthday') {
+                return "Your birthday message is ready. Share it with the celebrant now!";
+            }
+            return `Your special message has been created. Share it for ${getOccasionLabel(occasion).toLowerCase()} now!`;
+        }
+
+        function getShareWhatsAppText(url) {
+            const textByOccasion = {
+                valentine: `I made a special Valentine's note for you! Check it out here: ${url}`,
+                birthday: `I made a special birthday message for you! Check it out here: ${url}`,
+                anniversary: `I made a special anniversary note for you! Check it out here: ${url}`,
+                apology: `I sent you a personal apology note. Read it here: ${url}`,
+                just_because: `I made a special note for you. Check it out here: ${url}`
+            };
+            return textByOccasion[config.occasion] || textByOccasion.just_because;
+        }
+
+        function getReplyWhatsAppText() {
+            const textByOccasion = {
+                valentine: "Yes! I will be your Valentine... 💖",
+                birthday: "Thank you so much for the birthday message! 🎂💖",
+                anniversary: "Happy anniversary! I love this message ❤️",
+                apology: "Thank you for the apology. Let's talk 🤍",
+                just_because: "This made my day. Thank you 💖"
+            };
+            return textByOccasion[config.occasion] || textByOccasion.just_because;
+        }
+
+        function getTierDescriptionText(amt) {
+            const isBirthday = config.occasion === 'birthday';
+            if (amt === 0) return isBirthday ? "Standard birthday messages." : "Standard romantic notes.";
+            if (amt === 2) return isBirthday ? "⚡ SPARK MODE + birthday vibes + lively effects." : "⚡ SPARK MODE + Warm Vibes + Heartbeat Effect.";
+            if (amt === 5) return isBirthday ? "🎉 PARTY MODE + floating celebration icons + warm wishes." : "💖 PINK THEME + Floating Hearts + Very Romantic.";
+            if (amt === 10) return isBirthday ? "👑 GOLD THEME + your name signed + VIP emojis + premium birthday wishes." : "👑 GOLD THEME + Your Name Signed + VIP Emojis + The Deepest Love Letters.";
+            return "Premium personalized message options.";
+        }
+
+        function getEndingConfig() {
+            const byOccasion = {
+                valentine: { yesLabel: "Yes", noLabel: "No", showNo: true, endingLabel: "Ending Note", noMode: "tease" },
+                birthday: { yesLabel: "Celebrate", noLabel: "No", showNo: false, endingLabel: "Birthday Wishes", noMode: "none" },
+                anniversary: { yesLabel: "Always", noLabel: "No", showNo: false, endingLabel: "Anniversary Note", noMode: "none" },
+                apology: { yesLabel: "Forgiven", noLabel: "Not Yet", showNo: true, endingLabel: "Ending Note", noMode: "tease" },
+                just_because: { yesLabel: "Received", noLabel: "No", showNo: false, endingLabel: "Closing Note", noMode: "none" }
+            };
+            return byOccasion[config.occasion] || byOccasion.just_because;
+        }
+
+        function applyEndingControls() {
+            const ending = getEndingConfig();
+            const yesBtn = document.getElementById('yes-btn');
+            const noBtn = document.getElementById('no-btn');
+            yesBtn.innerText = ending.yesLabel;
+            noBtn.innerText = ending.noLabel;
+            noBtn.classList.toggle('hidden', !ending.showNo);
+        }
+
+        function updateOccasionCopy() {
+            const tagline = document.getElementById('setup-tagline');
+            const shareModalSubtext = document.getElementById('share-modal-subtext');
+            if (tagline) tagline.innerText = getOccasionTagline();
+            if (shareModalSubtext) shareModalSubtext.innerText = getShareModalText();
+        }
+
+        function getBirthdayStyleTierData() {
+            const name = config.name || "you";
+            const style = config.bdayStyle || "funny";
+            const tier = config.tier || "free";
+            const tierSignoff = {
+                free: "Have a great one!",
+                basic: "Enjoy your day to the fullest.",
+                sweet: "Celebrate big, you deserve it!",
+                heavy: "Wishing you a massive year ahead."
+            };
+            const messagesByStyle = {
+                funny: {
+                    free: [`Happy Birthday, ${name}!`, "Today you are officially allowed to act expensive.", "Eat cake first. Ask questions later."],
+                    basic: [`Happy Birthday, ${name}! 🎉`, "You are aging like premium jollof: only getting better.", "May your battery, bank app, and vibes all stay full today."],
+                    sweet: [`Happy Birthday, ${name}!`, "Another year older, wiser, and still a whole vibe.", "May today come with cake, laughter, and zero stress."],
+                    heavy: [`Happy Birthday, ${name}!`, "You make life brighter just by being in it.", "May this new year bring wins, peace, and a ridiculous amount of joy."]
+                },
+                sweet: {
+                    free: [`Happy Birthday, ${name}!`, "Wishing you a day full of smiles.", "You deserve beautiful moments today."],
+                    basic: [`Happy Birthday, ${name}! 💝`, "May your day be soft, joyful, and full of love.", "I hope this year brings you peace and good surprises."],
+                    sweet: [`Happy Birthday to someone truly special, ${name}.`, "May this day wrap you in love and laughter.", "I hope your new year is filled with grace, joy, and answered prayers."],
+                    heavy: [`Happy Birthday, ${name}.`, "You are deeply appreciated and dearly loved.", "May this next chapter bring favor, growth, and happiness beyond what you expect."]
+                },
+                romantic: {
+                    free: [`Happy Birthday, ${name}!`, "You make every day feel warmer.", "I hope today treats you gently and beautifully."],
+                    basic: [`Happy Birthday, my special person ${name}.`, "Being close to you is a gift on its own.", "I hope today feels as lovely as your smile."],
+                    sweet: [`Happy Birthday, ${name} ❤️`, "You make life sweeter, calmer, and brighter.", "I am grateful for you today and every day."],
+                    heavy: [`Happy Birthday, my love ${name}.`, "You are one of the best things that has happened to me.", "May this year overflow with love, peace, and unforgettable moments for you."]
+                },
+                biblical: {
+                    free: [`Happy Birthday, ${name}!`, "May God keep you and strengthen you.", "May your new year be filled with peace and favor."],
+                    basic: [`Happy Birthday, ${name}.`, "May the Lord order your steps and bless the work of your hands.", "May grace, peace, and joy follow you this year."],
+                    sweet: [`Happy Birthday, ${name}.`, "May God crown your new year with mercy, wisdom, and open doors.", "May your heart be filled with joy and your home with testimony."],
+                    heavy: [`Happy Birthday, ${name}.`, "May the Lord preserve you, enlarge your coast, and establish you in purpose.", "May this new year bring divine favor, good health, peace, and overflowing blessings in every area of your life."]
+                },
+                professional: {
+                    free: [`Happy Birthday, ${name}.`, "Wishing you a great day.", "Best wishes for a successful year ahead."],
+                    basic: [`Happy Birthday, ${name}.`, "Wishing you a productive and joyful year ahead.", "Hope you take time to celebrate your wins today."],
+                    sweet: [`Warm birthday wishes, ${name}.`, "May the year ahead bring progress, happiness, and good health.", "Wishing you continued success in all you do."],
+                    heavy: [`Happy Birthday, ${name}.`, "Thank you for the value you bring to the people around you.", "Wishing you a remarkable year ahead filled with growth and fulfillment."]
+                }
+            };
+
+            const styleSet = messagesByStyle[style] || messagesByStyle.sweet;
+            const messages = styleSet[tier] || styleSet.free;
+            return {
+                messages,
+                question: tierSignoff[tier] || tierSignoff.free
+            };
+        }
+
+        function getSuccessContent() {
+            const themeConfig = themes[config.type] || themes['lover'];
+            const genderData = (themeConfig.flow && (themeConfig.flow[config.gender] || themeConfig.flow['her'])) || {};
+            const tierSuccess = genderData.success_by_tier && genderData.success_by_tier[config.tier];
+            const baseSuccess = tierSuccess || genderData.success || { heading: "Done", message: "", looping_quotes: [] };
+            const successObj = {
+                heading: baseSuccess.heading || "Done",
+                message: baseSuccess.message || "",
+                looping_quotes: Array.isArray(baseSuccess.looping_quotes) ? [...baseSuccess.looping_quotes] : []
+            };
+
+            if (config.sender && (config.tier === 'heavy' || config.tier === 'sweet')) {
+                const signature = `From ${config.sender}`;
+                if (!successObj.looping_quotes.includes(signature)) {
+                    successObj.looping_quotes.push(signature);
+                }
+            }
+
+            return successObj;
+        }
+
+        function setOccasion(occ) {
+            config.occasion = occ;
+            document.querySelectorAll('#setup-view .btn-choice').forEach(b => {
+                if (b.id.startsWith('occ-')) b.classList.remove('active');
+            });
+            document.getElementById(`occ-${occ}`).classList.add('active');
+
+            const valFields = document.getElementById('valentine-fields');
+            const birthFields = document.getElementById('birthday-fields');
+            const tierLabel = document.getElementById('tier-label');
+
+            if (occ === 'birthday') {
+                valFields.classList.add('hidden');
+                birthFields.classList.remove('hidden');
+                tierLabel.innerText = "Premium Add-ons (Optional)";
+                config.type = 'birthday'; // Use birthday theme fallback
+            } else {
+                valFields.classList.remove('hidden');
+                birthFields.classList.add('hidden');
+                tierLabel.innerText = "Tier";
+                const activeRel = document.querySelector('#valentine-fields button[id^="rel-"].active');
+                config.type = activeRel ? activeRel.id.replace('rel-', '') : 'lover';
+            }
+            updateOccasionCopy();
+            setPrice(config.amount);
+        }
+
+        function setStyle(styleOption) {
+            config.bdayStyle = styleOption;
+            document.querySelectorAll('#birthday-fields .btn-choice').forEach(b => {
+                if (b.id.startsWith('style-')) b.classList.remove('active');
+            });
+            document.getElementById(`style-${styleOption}`).classList.add('active');
+        }
+
         function setRel(t) {
             config.type = t;
-            document.querySelectorAll('#setup-view .btn-choice').forEach(b => {
-                // Only targeting relationship buttons, but they share class. 
-                // Let's rely on ID structure to separate or just specific IDs
-                if (b.id.startsWith('rel-')) b.classList.remove('active');
-            });
+            document.querySelectorAll('#valentine-fields button[id^="rel-"]').forEach(b => b.classList.remove('active'));
             document.getElementById(`rel-${t}`).classList.add('active');
-        }
+            }
 
         function setGender(g) {
             config.gender = g;
-            ['her', 'him', 'them'].forEach(k => document.getElementById(`gen-${k}`).classList.remove('active'));
-            document.getElementById(`gen-${g}`).classList.add('active');
+            ['her', 'him', 'them'].forEach(k => {
+                const valBtn = document.getElementById(`gen-${k}`);
+                const bdayBtn = document.getElementById(`bday-gen-${k}`);
+                if (valBtn) valBtn.classList.remove('active');
+                if (bdayBtn) bdayBtn.classList.remove('active');
+            });
+            const activeValBtn = document.getElementById(`gen-${g}`);
+            const activeBdayBtn = document.getElementById(`bday-gen-${g}`);
+            if (activeValBtn) activeValBtn.classList.add('active');
+            if (activeBdayBtn) activeBdayBtn.classList.add('active');
         }
 
         function setPrice(amt) {
@@ -1152,16 +1198,16 @@
 
             if (amt === 0) {
                 btn.innerText = "Generate Free Link";
-                desc.innerText = "Standard romantic notes.";
+                desc.innerText = getTierDescriptionText(amt);
             } else if (amt === 2) {
                 btn.innerText = `Pay ₵${amt}`;
-                desc.innerText = "⚡ SPARK MODE + Warm Vibes + Heartbeat Effect.";
+                desc.innerText = getTierDescriptionText(amt);
             } else if (amt === 5) {
                 btn.innerText = `Pay ₵${amt}`;
-                desc.innerText = "💖 PINK THEME + Floating Hearts + Very Romantic.";
+                desc.innerText = getTierDescriptionText(amt);
             } else if (amt === 10) {
                 btn.innerText = `Pay ₵${amt}`;
-                desc.innerText = "👑 GOLD THEME + Your Name Signed + VIP Emojis + The Deepest Love Letters.";
+                desc.innerText = getTierDescriptionText(amt);
             }
         }
 
@@ -1231,6 +1277,9 @@
             }
 
             const data = {
+                occasion: config.occasion,
+                birthDate: config.occasion === 'birthday' ? document.getElementById('birth-date').value : undefined,
+                bdayStyle: config.occasion === 'birthday' ? config.bdayStyle : undefined,
                 name: document.getElementById('target-name').value,
                 sender: document.getElementById('sender-name').value,
                 senderPhone: document.getElementById('sender-phone').value,
@@ -1297,7 +1346,7 @@
 
         function shareToWhatsApp() {
             const url = document.getElementById('share-link-input').value;
-            const text = `I made a special Valentine's note for you! Check it out here: ${url}`;
+            const text = getShareWhatsAppText(url);
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
@@ -1312,10 +1361,6 @@
             if (config.tier === 'heavy') {
                 document.body.classList.add('premium-mode');
                 document.getElementById('intro-title').classList.add('text-shimmer'); // Add shimmer
-                const genderData = themes[config.type].messages[config.gender] || themes[config.type].messages['her'];
-                if (config.sender && !genderData.success.includes(`Love, ${config.sender}`)) {
-                    genderData.success = [...genderData.success, `Love, ${config.sender}`];
-                }
             } else if (config.tier === 'sweet') {
                 document.body.classList.add('sweet-mode');
                 document.getElementById('intro-title').classList.add('text-pulse'); // Add pulse
@@ -1323,21 +1368,39 @@
                 document.body.classList.add('spark-mode');
             }
 
-            typeWriter('intro-title', `A note for ${config.name}.`);
+            if (config.occasion === 'birthday') {
+                typeWriter('intro-title', `Happy Birthday, ${config.name}! 🎂`);
+            } else if (config.occasion === 'anniversary') {
+                typeWriter('intro-title', `Happy Anniversary, ${config.name}.`);
+            } else if (config.occasion === 'apology') {
+                typeWriter('intro-title', `I'm so sorry, ${config.name}.`);
+            } else if (config.occasion === 'just_because') {
+                typeWriter('intro-title', `Just thinking of you, ${config.name}.`);
+            } else {
+                typeWriter('intro-title', `A note for ${config.name}.`);
+            }
 
             if (config.sender) {
                 const sub = document.getElementById('intro-subtitle');
                 sub.innerText = `FROM ${config.sender}`;
                 sub.classList.remove('opacity-0');
-                anime({ targets: '#intro-subtitle', opacity: 1, delay: 1000, duration: 1000 });
+                if (reduceMotion) {
+                    sub.style.opacity = 1;
+                } else {
+                    anime({ targets: '#intro-subtitle', opacity: 1, delay: 1000, duration: 1000 });
+                }
             }
+
+            applyEndingControls();
+            setFlowProgress('Step 2 of 3 • Opening Note');
+            setSuccessProgress();
 
             // Reply Button Logic
             if (config.senderPhone) {
                 const btn = document.getElementById('reply-btn');
                 btn.classList.remove('hidden');
                 btn.onclick = () => {
-                    const text = `Yes! I will be your Valentine... 💖`;
+                    const text = getReplyWhatsAppText();
                     window.open(`https://wa.me/${config.senderPhone}?text=${encodeURIComponent(text)}`, '_blank');
                 };
             }
@@ -1350,6 +1413,13 @@
 
         document.getElementById('read-btn').onclick = () => {
             document.getElementById('bg-music').play().catch(() => { console.log('Autoplay blocked'); });
+            if (reduceMotion) {
+                document.getElementById('intro-view').classList.add('hidden');
+                document.getElementById('question-view').classList.remove('hidden');
+                document.getElementById('question-view').style.opacity = 1;
+                showNext();
+                return;
+            }
             anime({
                 targets: '#intro-view', opacity: 0, duration: 600, complete: () => {
                     document.getElementById('intro-view').classList.add('hidden');
@@ -1362,34 +1432,47 @@
 
         function showNext() {
             let message = "";
+            let showButtons = false;
+            let totalSteps = 1;
 
-            // Use pre-defined messages for other tiers
-            // Check for Custom Messages first
-            let list;
             if (config.customMessages && config.customMessages.length > 0) {
-                list = config.customMessages;
+                totalSteps = config.customMessages.length;
+                if (msgIndex < config.customMessages.length) {
+                    message = config.customMessages[msgIndex];
+                    if (msgIndex === config.customMessages.length - 1) {
+                        showButtons = true;
+                    }
+                }
             } else {
-                // Fallback to 'her' if gender is missing (legacy safety)
-                const genderData = themes[config.type].messages[config.gender] || themes[config.type].messages['her'];
-                list = genderData.tiers[config.tier];
+                const themeData = themes[config.type] || themes['lover'];
+                const genderData = themeData.flow[config.gender] || themeData.flow['her'];
+                let tierData = config.occasion === 'birthday'
+                    ? getBirthdayStyleTierData()
+                    : genderData.tiers[config.tier];
 
-                // Fallback to sweet if heavy is missing
-                if (!list && config.tier === 'heavy') {
-                    list = genderData.tiers['sweet'];
+                if (!tierData && config.tier === 'heavy') {
+                    tierData = genderData.tiers['sweet'];
+                }
+
+                if (!tierData) {
+                    console.error("Tier missing for this gender/type combination");
+                    return;
+                }
+                totalSteps = (tierData.messages ? tierData.messages.length : 0) + 1;
+
+                if (msgIndex < tierData.messages.length) {
+                    message = tierData.messages[msgIndex];
+                } else if (msgIndex === tierData.messages.length) {
+                    message = tierData.question;
+                    showButtons = true;
                 }
             }
 
-            // Safety check if tier doesn't exist (e.g. heavy removed from some)
-            if (!list) {
-                console.error("Tier missing for this gender/type combination");
-                return;
-            }
-
-            message = list[msgIndex];
+            updateMessageProgress(msgIndex, totalSteps, showButtons);
             typeWriter('question-text', message, 50);
 
-            // Show buttons on last message for pre-defined tiers
-            if (msgIndex === list.length - 1) {
+            if (showButtons) {
+                applyEndingControls();
                 document.getElementById('next-msg-btn').classList.add('hidden');
                 document.getElementById('buttons-container').style.display = 'flex';
             }
@@ -1398,6 +1481,10 @@
         // New Typewriter Helper with Cursor
         function typeWriter(elementId, text, speed = 50) {
             const element = document.getElementById(elementId);
+            if (reduceMotion) {
+                element.innerHTML = text;
+                return;
+            }
             element.innerHTML = '<span class="cursor"></span>'; // Start with cursor
             let i = 0;
 
@@ -1418,6 +1505,8 @@
         };
 
         document.getElementById('no-btn').onclick = function () {
+            const ending = getEndingConfig();
+            if (ending.noMode !== 'tease') return;
             const yes = document.getElementById('yes-btn');
             let currentScale = parseFloat(yes.style.transform.replace('scale(', '').replace(')', '')) || 1;
             yes.style.transform = `scale(${currentScale + 0.5})`;
@@ -1426,7 +1515,8 @@
 
         document.getElementById('yes-btn').onclick = () => {
             const overlay = document.getElementById('petal-overlay');
-            let emojis = themes[config.type].emojis;
+            const themeConfig = themes[config.type] || themes['lover'];
+            let emojis = themeConfig.emojis || ['🌸', '🌹'];
 
             // Premium Emojis
             if (config.tier === 'heavy') {
@@ -1443,39 +1533,67 @@
 
             // Confetti Explosion
             confetti({
-                particleCount: 150,
-                spread: 100,
+                particleCount: reduceMotion ? 40 : 150,
+                spread: reduceMotion ? 60 : 100,
                 origin: { y: 0.6 },
                 colors: ['#FF69B4', '#FF1493', '#D4AF37'], // Pink, Deep Pink, Gold
                 shapes: ['circle', 'square'],
-                scalar: 1.2
+                scalar: reduceMotion ? 0.9 : 1.2
             });
 
             anime({
-                targets: '.overlay-petal', scale: [0, 1.2], opacity: [0, 1], duration: 800, delay: anime.stagger(15, { grid: [10, 10], from: 'center' }),
+                targets: '.overlay-petal',
+                scale: [0, 1.2],
+                opacity: [0, 1],
+                duration: reduceMotion ? 350 : 800,
+                delay: reduceMotion ? 0 : anime.stagger(15, { grid: [10, 10], from: 'center' }),
                 complete: () => {
                     document.getElementById('question-view').classList.add('hidden');
                     document.getElementById('success-view').classList.remove('hidden');
                     document.getElementById('success-view').style.opacity = 1;
-                    document.getElementById('final-message').innerText = `Tap the heart, ${config.name}...`;
-                    anime({ targets: '#petal-overlay', opacity: 0, duration: 800, delay: 400, complete: () => document.getElementById('petal-overlay').classList.add('hidden') });
+
+                    const successObj = getSuccessContent();
+                    const ending = getEndingConfig();
+                    setSuccessProgress();
+                    document.getElementById('final-message').innerHTML = `<span class="text-xs tracking-[0.35em] uppercase not-italic font-sans text-gray-400 mb-4 block">${ending.endingLabel}</span><span class="text-4xl font-bold not-italic font-sans mb-4 block">${successObj.heading}</span><span class="block mt-2">${successObj.message}</span>`;
+
+                    anime({ targets: '#petal-overlay', opacity: 0, duration: reduceMotion ? 250 : 800, delay: reduceMotion ? 0 : 400, complete: () => document.getElementById('petal-overlay').classList.add('hidden') });
                 }
             });
         };
 
         document.getElementById('heart-trigger').onclick = () => {
-            const genderData = themes[config.type].messages[config.gender] || themes[config.type].messages['her'];
-            const list = genderData.success;
-            const msgEl = document.getElementById('final-message');
-            anime({ targets: '#heart-trigger', scale: [1, 1.3, 1], duration: 400 });
-            for (let i = 0; i < 5; i++) createPetal(); // Increased count for effect
-            anime({
-                targets: msgEl, opacity: 0, duration: 300, complete: () => {
-                    msgEl.innerText = list[flowIndex];
-                    flowIndex = (flowIndex + 1) % list.length;
-                    anime({ targets: msgEl, opacity: 1, duration: 600 });
+            const successObj = getSuccessContent();
+            const list = successObj.looping_quotes;
+
+            if (!reduceMotion) {
+                anime({ targets: '#heart-trigger', scale: [1, 1.3, 1], duration: 400 });
+            }
+            for (let i = 0; i < (reduceMotion ? 3 : 8); i++) createPetal();
+
+            if (list && list.length > 0) {
+                let quoteEl = document.getElementById('looping-quote');
+                if (!quoteEl) {
+                    quoteEl = document.createElement('p');
+                    quoteEl.id = 'looping-quote';
+                    quoteEl.className = 'text-sm text-gray-500 italic mt-6 opacity-0 tracking-widest uppercase';
+                    document.getElementById('success-view').appendChild(quoteEl);
                 }
-            });
+
+                if (reduceMotion) {
+                    quoteEl.innerText = list[flowIndex];
+                    flowIndex = (flowIndex + 1) % list.length;
+                    quoteEl.style.opacity = 1;
+                } else {
+                    anime({
+                        targets: quoteEl, opacity: 0, duration: 300, complete: () => {
+                            quoteEl.innerText = list[flowIndex];
+                            flowIndex = (flowIndex + 1) % list.length;
+                            anime({ targets: quoteEl, opacity: 1, duration: 600 });
+                        }
+                    });
+                }
+            }
         };
 
         let msgIndex = 0, flowIndex = 0;
@@ -1554,6 +1672,10 @@
             config.name = name;
             config.sender = document.getElementById('sender-name').value;
             config.senderPhone = document.getElementById('sender-phone').value;
+            if (config.occasion === 'birthday') {
+                config.birthDate = document.getElementById('birth-date').value;
+                // Gender/Rel stays the same if occasion is birthday (implicitly defaults to fallback context of theme)
+            }
             // Config gender is already set by setGender()
 
             // Handle Custom Message
@@ -1627,6 +1749,8 @@
             // Reset Yes Button Scale
             document.getElementById('yes-btn').style.transform = 'scale(1)';
             document.getElementById('no-btn').classList.remove('hidden');
+            setFlowProgress('Step 2 of 3 • Opening Note');
+            setSuccessProgress();
 
             // Reset Next/Yes/No button visibility for next preview
             document.getElementById('next-msg-btn').classList.remove('hidden');
@@ -1636,8 +1760,6 @@
             msgIndex = 0;
             flowIndex = 0;
         }
-
-        setInterval(createPetal, 600);
 
         function updateCharCount(input) {
             const limit = input.maxLength;
@@ -1677,7 +1799,7 @@
             </div>
 
             <h2 class="text-xl font-bold text-gray-800 mb-2">Note Ready!</h2>
-            <p class="text-gray-500 text-sm mb-8">Your special message has been created. Share it with your Valentine
+            <p id="share-modal-subtext" class="text-gray-500 text-sm mb-8">Your special message has been created. Share it with your Valentine
                 now!</p>
 
             <div class="flex flex-col gap-3">
